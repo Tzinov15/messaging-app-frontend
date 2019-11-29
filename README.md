@@ -1,13 +1,15 @@
-# Frontend for Messaging App 
+# Frontend for Messaging App
 
 ## Things Learned
 
+- Avataaars.io is super cool for generating random avatars if needed
+- How to use `useEffect` to re-create `componentDidMount` behavior
+
 ## Resources Used
 
+https://medium.com/@rossbulat/react-hooks-managing-web-sockets-with-useeffect-and-usestate-2dfc30eeceec
+
 ## Consideration
-
-
-
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
