@@ -4,6 +4,14 @@
 
 - Avataaars.io is super cool for generating random avatars if needed
 - How to use `useEffect` to re-create `componentDidMount` behavior
+- Learned that React Router `state` object that you push when you hit routes must be serializable
+  https://stackoverflow.com/questions/24425885/failed-to-execute-pushstate-on-history-error-when-using-window-history-pushs
+- https://medium.com/the-andela-way/understanding-the-fundamentals-of-routing-in-react-b29f806b157e
+
+  > > > For the browser-based applications we are building, the BrowserRouter and HashRouter are a good fit.
+  > > > The BrowserRouter is used for applications which have a dynamic server that knows how to handle any type of URL whereas the HashRouter is used for static websites with a server that only responds to requests for files that it knows about.
+
+- https://medium.com/front-end-weekly/3-things-you-didnt-know-about-the-foreach-loop-in-js-ff02cec465b1
 
 ## Resources Used
 

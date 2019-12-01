@@ -1,14 +1,55 @@
-.App {
+.Main {
   text-align: center;
+  min-height: 100vh;
+  background-color: #282c34;
+  display: grid;
+  grid-template-rows: 100px auto;
+  grid-template-areas:
+    "header"
+    "body-content";
 }
 
 .App-logo {
   height: 40vmin;
 }
 
+.body-content {
+  grid-area: body-content;
+  width: 100%;
+  display: flex;
+  color: white;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: center;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.available-users-section {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-chat-section {
+  background-color: #2a2d34;
+  font-size: 12px;
+  flex: 1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  grid-area: header;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,8 +66,22 @@
   transition: 0.3s;
 }
 
+.availableChatUser {
+  position: relative;
+}
 .availableChatUser:hover {
   transform: scale(1.5);
   cursor: pointer;
   transition: 0.3s;
+}
+
+.unread-user::after {
+  content: "";
+  width: 20px;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  height: 20px;
+  border-radius: 10px;
+  background: turquoise;
 }
