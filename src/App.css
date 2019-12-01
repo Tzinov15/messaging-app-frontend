@@ -20,3 +20,13 @@
 .App-link {
   color: #09d3ac;
 }
+
+.availableChatUser {
+  transition: 0.3s;
+}
+
+.availableChatUser:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+  transition: 0.3s;
+}
