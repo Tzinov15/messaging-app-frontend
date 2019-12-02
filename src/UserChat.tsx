@@ -27,13 +27,14 @@ const createMessageElement = (messageData: IMessageData) => {
   );
 };
 
+// TODO: This component should not be handling any socket message receiving etc. That should all be done by Main.tsx and flushed into Redux
 const UserChat: React.FC<{
   socket: WebSocket;
   author: string;
   recipient: { username: string; avatar: string };
 }> = ({ socket, author, recipient }) => {
   const [inputValue, changeInputValue] = useState<string>("");
-  const [messages, updateMessages] = useState<IMessageData[]>([]);
+  const [messages, updateMessages] = useState<IMessageData[]>([]); // TODO: Alright, this is the big problem, big elephant. messages has to come from Redux
   const [socketError, setSocketError] = useState<boolean>(false);
   useEffect(() => {
     console.log("recipient has changed!");

@@ -28,11 +28,12 @@ export interface IClientUser {
 }
 
 const Main: React.FC = () => {
-  const [activeClients, setActiveClients] = useState<IClientUser[]>([]);
+  const [activeClients, setActiveClients] = useState<IClientUser[]>([]); // This should be in Redux store, will be easier to manage
   const [socketError, setSocketError] = useState<boolean>(false);
-  const [activeChat, setActiveChat] = useState<boolean>(false);
-  const [unreadUsers, setUnreadUsers] = useState<string[]>([]);
+  const [activeChat, setActiveChat] = useState<boolean>(false); // This should be in Redux store for the reason below
+  const [unreadUsers, setUnreadUsers] = useState<string[]>([]); // This should be in Redux store. Turned off everytime we click that user. Turned on everytime we get a message from that user and we're NOT actively talking to them
   const [activeRecipient, setActiveRecipient] = useState<{
+    // This should be in Redux store
     username: string;
     avatar: string;
   }>({ username: "", avatar: "" });
@@ -47,7 +48,8 @@ const Main: React.FC = () => {
       const messageData = JSON.parse(event.data);
       const { action } = messageData;
       switch (action) {
-        case "CLIENT_CONNECT":
+        // case I_CONNECTED // Need new case for when this particular socket has been first acknowledged by the server because in that case the server will bee sending message data
+        case "CLIENT_CONNECT": // New User -> this means that the server is updating us to tell us that there is a new kid in the neighborhood and is giving us their username and avatar info so we can render a new entry for them
         case "CLIENT_DISCONNECT":
           setActiveClients(messageData.users);
           break;
@@ -102,6 +104,7 @@ const Main: React.FC = () => {
                         username: client.username,
                         avatar: client.avatar
                       });
+                      // TODO: All this logic of updating the unreadusers array needs to be cleaned up, updated
                       const updatedUnreadUsersArray = [...unreadUsers];
                       updatedUnreadUsersArray.splice(
                         unreadUsers.indexOf(client.username)
