@@ -8,10 +8,32 @@ const chance = new Chance();
 
 export { RandomAvatar, RandomAvatarOptions };
 
-const username = chance.word({ length: 6 });
+const randomUsername = chance.word({ length: 6 });
+const localStorageUsername = localStorage.getItem(
+  "messaging-app-user-config-username"
+);
+
+const localStorageAvatarOptions = localStorage.getItem(
+  "messaging-app-user-config-avatarOptions"
+);
+
+// re-use the localStorage versions of username and avatarOptions
+const username = localStorageUsername ? localStorageUsername : randomUsername;
+const avatarOptions = localStorageAvatarOptions
+  ? JSON.parse(localStorageAvatarOptions)
+  : RandomAvatarOptions;
+
+if (!localStorageUsername)
+  localStorage.setItem("messaging-app-user-config-username", username);
+if (!localStorageAvatarOptions)
+  localStorage.setItem(
+    "messaging-app-user-config-avatarOptions",
+    JSON.stringify(RandomAvatarOptions)
+  );
+
 const socket = new WebSocket(
   `ws://localhost:9191?username=${username}&avatarOptions=${JSON.stringify(
-    RandomAvatarOptions
+    avatarOptions
   )}`
 );
 
@@ -79,7 +101,7 @@ const Main: React.FC = () => {
         <p>
           Hi! Your username is <b>{username}</b>
         </p>
-        <RandomAvatar {...RandomAvatarOptions} />
+        <RandomAvatar {...avatarOptions} />
         {socketError && <h1 className="text-danger">SOCKET ERROR</h1>}
       </header>
       <section className="body-content">
