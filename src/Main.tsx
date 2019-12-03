@@ -8,24 +8,24 @@ const chance = new Chance();
 export { RandomAvatar, RandomAvatarOptions };
 
 const randomUsername = chance.word({ length: 6 });
-const localStorageUsername = localStorage.getItem(
+const localStorageUsername = sessionStorage.getItem(
   "messaging-app-user-config-username"
 );
 
-const localStorageAvatarOptions = localStorage.getItem(
+const localStorageAvatarOptions = sessionStorage.getItem(
   "messaging-app-user-config-avatarOptions"
 );
 
-// re-use the localStorage versions of username and avatarOptions
+// re-use the sessionStorage versions of username and avatarOptions
 const username = localStorageUsername ? localStorageUsername : randomUsername;
 const avatarOptions = localStorageAvatarOptions
   ? JSON.parse(localStorageAvatarOptions)
   : RandomAvatarOptions;
 
 if (!localStorageUsername)
-  localStorage.setItem("messaging-app-user-config-username", username);
+  sessionStorage.setItem("messaging-app-user-config-username", username);
 if (!localStorageAvatarOptions)
-  localStorage.setItem(
+  sessionStorage.setItem(
     "messaging-app-user-config-avatarOptions",
     JSON.stringify(RandomAvatarOptions)
   );
@@ -37,10 +37,11 @@ const socket = new WebSocket(
 );
 
 export interface IMessageData {
-  username: string;
-  date: string;
   msg: string;
-  avatarURL: string;
+  recipient: string;
+  author: string;
+  avatarURL?: string;
+  timestamp: string;
 }
 
 export interface IClientUser {
@@ -53,6 +54,7 @@ const Main: React.FC = () => {
   const [socketError, setSocketError] = useState<boolean>(false);
   const [activeChat, setActiveChat] = useState<boolean>(false); // This should be in Redux store for the reason below
   const [unreadUsers, setUnreadUsers] = useState<string[]>([]); // This should be in Redux store. Turned off everytime we click that user. Turned on everytime we get a message from that user and we're NOT actively talking to them
+  const [messages, updateMessages] = useState<IMessageData[]>([]);
   const [activeRecipient, setActiveRecipient] = useState<{
     // This should be in Redux store
     username: string;
@@ -80,15 +82,22 @@ const Main: React.FC = () => {
           );
           console.log(messageData.messages);
           setActiveClients(messageData.users);
+          updateMessages(messages => [...messages, ...messageData.messages]);
           break;
         case "USER_MESSAGE":
-          console.log("WE HAVE USER MESSAGE");
-          console.log(messageData.author);
-          console.log("activeRecipient");
-          console.log(activeRecipient.username);
           if (activeRecipient.username !== messageData.author) {
             setUnreadUsers(unreadUsers => [...unreadUsers, messageData.author]);
           }
+          // Update with the new message that came in from the user
+          updateMessages(messages => [
+            ...messages,
+            {
+              msg: messageData.msg,
+              recipient: messageData.recipient,
+              author: messageData.author,
+              timestamp: messageData.timestamp
+            }
+          ]);
           break;
       }
     });
@@ -120,10 +129,6 @@ const Main: React.FC = () => {
                 const decodedAvatarOptionsJSON = JSON.parse(
                   decodeURI(client.avatar)
                 );
-                console.log("client.username");
-                console.log(client.username);
-                console.log("username");
-                console.log(username);
                 return (
                   <div
                     onClick={() => {
@@ -164,6 +169,12 @@ const Main: React.FC = () => {
           <div className="user-chat-section">
             <UserChat
               socket={socket}
+              messages={messages.filter(
+                message =>
+                  message.author === activeRecipient.username ||
+                  message.recipient === activeRecipient.username
+              )}
+              updateMessages={updateMessages}
               author={username}
               recipient={activeRecipient}
             />
