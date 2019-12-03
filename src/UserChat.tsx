@@ -1,9 +1,6 @@
 import React, { useEffect, useState, Fragment } from "react";
 import "./App.css";
-import Chance from "chance";
 import { RandomAvatar, RandomAvatarOptions } from "./Main";
-import { Socket } from "dgram";
-const chance = new Chance();
 
 export interface IMessageData {
   msg: string;

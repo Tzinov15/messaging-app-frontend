@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import Chance from "chance";
 import { RandomAvatar, RandomAvatarOptions } from "./AvatarGenerator";
-import { Link } from "react-router-dom";
 import UserChat from "./UserChat";
 const chance = new Chance();
 
@@ -73,6 +72,13 @@ const Main: React.FC = () => {
         // case I_CONNECTED // Need new case for when this particular socket has been first acknowledged by the server because in that case the server will bee sending message data
         case "CLIENT_CONNECT": // New User -> this means that the server is updating us to tell us that there is a new kid in the neighborhood and is giving us their username and avatar info so we can render a new entry for them
         case "CLIENT_DISCONNECT":
+          setActiveClients(messageData.users);
+          break;
+        case "CLIENT_NEW":
+          console.log(
+            "I am a client that JUST connected and here are the messages that the server gave me "
+          );
+          console.log(messageData.messages);
           setActiveClients(messageData.users);
           break;
         case "USER_MESSAGE":
