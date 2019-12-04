@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import "./App.css";
 import { RandomAvatar, RandomAvatarOptions, IMessageData } from "./Main";
 
@@ -10,7 +10,12 @@ const createMessageElement = (messageData: IMessageData, author: string) => {
       className="d-flex flex-row align-items-center"
       style={{ opacity: isMyMessage ? 0.5 : 1 }}
     >
-      <img width="30px" className="mr-2" src={messageData.avatarURL} />
+      <img
+        alt="avatar"
+        width="30px"
+        className="mr-2"
+        src={messageData.avatarURL}
+      />
       <b>[{messageData.author}] </b>{" "}
       <p className="mb-0 mx-3">{messageData.msg}</p>
       <i className="text-secondary">{messageData.timestamp}</i>
@@ -27,7 +32,7 @@ const UserChat: React.FC<{
   recipient: { username: string; avatar: string };
 }> = ({ socket, author, recipient, messages, updateMessages }) => {
   const [inputValue, changeInputValue] = useState<string>("");
-  const [socketError, setSocketError] = useState<boolean>(false);
+  const [socketError] = useState<boolean>(false);
   const decodedAvatarOptionsJSON = JSON.parse(decodeURI(recipient.avatar));
 
   return (

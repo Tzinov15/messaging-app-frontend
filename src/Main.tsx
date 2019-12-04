@@ -119,7 +119,7 @@ const Main: React.FC = () => {
     socket.addEventListener("error", function(event) {
       setSocketError(true);
     });
-  }, []);
+  }, [activeRecipient.username]);
 
   return (
     <div className="Main">
