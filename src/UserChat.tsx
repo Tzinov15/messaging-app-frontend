@@ -26,7 +26,6 @@ const createMessageElement = (messageData: IIncomingMessageData, author: string)
   );
 };
 
-// TODO: This component should not be handling any socket message receiving etc. That should all be done by Main.tsx and flushed into Redux
 const UserChat: React.FC<{
   socket: WebSocket;
   author: string;
