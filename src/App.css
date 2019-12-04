@@ -29,13 +29,15 @@ h5 {
 
 .chat-section {
   grid-area: chat-section;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 header {
   display: flex;
   flex-direction: row;
   grid-area: header;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   align-items: center;
   justify-content: center;
   background: #09d3ac;

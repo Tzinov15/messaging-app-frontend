@@ -29,7 +29,9 @@ if (!localStorageUsername) localStorage.setItem("messaging-app-user-config-usern
 if (!localStorageAvatarOptions)
   localStorage.setItem("messaging-app-user-config-avatarOptions", JSON.stringify(RandomAvatarOptions));
 
-const socket = new WebSocket(`ws://localhost:9191?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`);
+const socket = new WebSocket(
+  `ws://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
+);
 
 export interface IClientUser {
   username: string;
@@ -120,11 +122,13 @@ const Main: React.FC = () => {
   return (
     <div className="Main">
       <header className="header">
-        <div className="d-flex flex-column">
-          <h5>
+        <div className="">
+          <p className="mb-0">
             Welcome! Your username is <b>{username}</b> and this is your avatar!
-          </h5>
-          <p>Click on any of the active clients below to chat with them</p>
+          </p>
+          <p className="mb-0" style={{ fontSize: ".90rem", color: "#21242b" }}>
+            Click on any of the active clients below to chat with them
+          </p>
         </div>
         <RandomAvatar {...avatarOptions} />
         {socketError && <h1 className="text-danger">SOCKET ERROR</h1>}
