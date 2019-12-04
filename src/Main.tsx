@@ -71,6 +71,10 @@ export interface IIncomingConnectedClientData {
   users: IClientUser[];
 }
 
+export interface IIncomingPongMessage {
+  action: "PONG";
+}
+
 const Main: React.FC = () => {
   const [activeClients, setActiveClients] = useState<IClientUser[]>([]); // This should be in Redux store, will be easier to manage
   const [socketError, setSocketError] = useState<boolean>(false);
@@ -82,15 +86,24 @@ const Main: React.FC = () => {
     // Connection opened
     socket.addEventListener("open", function(event) {
       console.log("Hello Server!");
+
+      setInterval(() => {
+        socket.send(JSON.stringify({ action: "PING" }));
+      }, 10000);
     });
 
     // Listen for messages
     socket.addEventListener("message", function(event) {
-      const messageData: IIncomingMessageData | IIncomingConnectedClientData | IIncomingNewClientData = JSON.parse(
-        event.data
-      );
+      const messageData:
+        | IIncomingMessageData
+        | IIncomingConnectedClientData
+        | IIncomingNewClientData
+        | IIncomingPongMessage = JSON.parse(event.data);
       switch (messageData.action) {
         // case I_CONNECTED // Need new case for when this particular socket has been first acknowledged by the server because in that case the server will bee sending message data
+        case "PONG":
+          console.log("pong");
+          break;
         case "CLIENT_CONNECT": // New User -> this means that the server is updating us to tell us that there is a new kid in the neighborhood and is giving us their username and avatar info so we can render a new entry for them
         case "CLIENT_DISCONNECT":
           setActiveClients(messageData.users);
