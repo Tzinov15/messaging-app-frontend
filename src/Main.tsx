@@ -42,7 +42,7 @@ if (!localStorageAvatarOptions)
   );
 
 const socket = new WebSocket(
-  `ws://localhost:9191?username=${username}&avatarOptions=${JSON.stringify(
+  `ws://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(
     avatarOptions
   )}`
 );
