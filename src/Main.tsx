@@ -1,3 +1,14 @@
+/*
+
+TODO: Fix the CSS grid and responsive positioning of everything to not look bad
+      - Mobile responsiveness (have available chat icons go to the top in a horizontally scrolling sliver on small devices, main chat screen below that)
+                              (have available chat icons go to the left in a grid like pattern, chat screen goes to the right)
+      - Surface errors up to the UI from the socket message such as connection errors, DB errrors, etc
+      - Unread users and notifications need to be fixed
+      - Logic around localStorage setting/reading can be put into a separate function to clean this up
+
+*/
+
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import Chance from "chance";
@@ -112,17 +123,20 @@ const Main: React.FC = () => {
 
   return (
     <div className="Main">
-      <header className="App-header">
-        <p>
-          Hi! Your username is <b>{username}</b>
-        </p>
+      <header className="header">
+        <div className="d-flex flex-column">
+          <h5>
+            Welcome! Your username is <b>{username}</b> and this is your avatar!
+          </h5>
+          <p>Click on any of the active clients below to chat with them</p>
+        </div>
         <RandomAvatar {...avatarOptions} />
         {socketError && <h1 className="text-danger">SOCKET ERROR</h1>}
       </header>
-      <section className="body-content">
-        <div className="available-users-section">
-          <h1 className="mb-3">Available Connected Clients:</h1>
-          <div className="mt-3 d-flex flex-row align-items-center justify-content-around mx-">
+      <main className="body-content">
+        <section className="available-users-section">
+          <h4 className="mb-3">Available Connected Clients:</h4>
+          <div className="mt-3 avatar-grid ">
             {activeClients
               .filter(client => client.username !== username)
               .map(client => {
@@ -146,11 +160,11 @@ const Main: React.FC = () => {
                     }}
                     key={client.username}
                     // Gray out the person we're currently talking to
-                    style={{
-                      opacity:
-                        client.username === activeRecipient.username ? 0.5 : 1
-                    }}
-                    className={`availableChatUser mx-3 ${
+                    className={`${
+                      client.username === activeRecipient.username
+                        ? "user-active"
+                        : ""
+                    } availableChatUser  ${
                       // Don't show "new" message from a person if we're already talking to that person
                       unreadUsers.includes(client.username) &&
                       client.username !== username
@@ -164,9 +178,9 @@ const Main: React.FC = () => {
                 );
               })}
           </div>
-        </div>
+        </section>
         {activeChat && (
-          <div className="user-chat-section">
+          <section className="chat-section">
             <UserChat
               socket={socket}
               messages={messages.filter(
@@ -178,9 +192,9 @@ const Main: React.FC = () => {
               author={username}
               recipient={activeRecipient}
             />
-          </div>
+          </section>
         )}
-      </section>
+      </main>
     </div>
   );
 };

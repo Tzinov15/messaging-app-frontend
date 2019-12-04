@@ -1,3 +1,9 @@
+html {
+  height: 100vh;
+}
+h5 {
+  margin: 0;
+}
 .Main {
   text-align: center;
   min-height: 100vh;
@@ -9,30 +15,92 @@
     "body-content";
 }
 
-.App-logo {
-  height: 40vmin;
-}
-
 .body-content {
   grid-area: body-content;
-  width: 100%;
-  display: flex;
+  display: grid;
   color: white;
-  flex-direction: row;
-
-  align-items: center;
-  justify-content: center;
-  padding-left: 3rem;
-  padding-right: 3rem;
 }
 
 .available-users-section {
+  grid-area: available-users-section;
+  padding: 0.5rem;
+  background: #21242b;
+}
+
+.chat-section {
+  grid-area: chat-section;
+  padding: 2rem;
+}
+
+header {
   display: flex;
-  flex: 1;
-  width: 100%;
-  flex-direction: column;
+  flex-direction: row;
+  grid-area: header;
   align-items: center;
   justify-content: center;
+  background: #09d3ac;
+}
+/* if the screen is less than 700px  */
+@media only screen and (max-width: 870px) {
+  .body-content {
+    grid-template-rows: 200px auto;
+    grid-template-areas:
+      "available-users-section"
+      "chat-section";
+  }
+  .available-users-section .avatar-grid {
+    display: flex;
+    overflow-x: scroll;
+  }
+  .available-users-section {
+    overflow-x: scroll;
+  }
+}
+
+/* If the screen is between 700px and 120 px */
+@media only screen and (min-width: 870px) and (max-width: 1200px) {
+  .available-users-section .avatar-grid {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fit, 100px);
+    overflow-y: scroll;
+  }
+  .available-users-section {
+    overflow-y: scroll;
+    height: 100%;
+  }
+  .body-content {
+    grid-template-columns: 2fr 4fr;
+    grid-template-areas: "available-users-section chat-section";
+  }
+}
+
+/* If the screen is 1200px or wider */
+@media (min-width: 1200px) {
+  .available-users-section .avatar-grid {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fit, 100px);
+    overflow-y: scroll;
+
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+  .body-content {
+    grid-template-columns: 2fr 4fr;
+    grid-template-areas: "available-users-section chat-section";
+  }
+  .available-users-section {
+    overflow-y: scroll;
+  }
+  .available-users-section {
+    overflow-y: scroll;
+    height: 100%;
+  }
+}
+
+.App-logo {
+  height: 40vmin;
 }
 
 .user-chat-section {
@@ -68,11 +136,20 @@
 
 .availableChatUser {
   position: relative;
+  opacity: 0.5;
 }
+
+.user-active {
+  opacity: 1;
+  color: #09d3ac;
+  font-weight: 500;
+}
+
 .availableChatUser:hover {
-  transform: scale(1.5);
+  transform: scale(1.2);
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.15s;
+  opacity: 1;
 }
 
 .unread-user::after {
@@ -84,4 +161,11 @@
   height: 20px;
   border-radius: 10px;
   background: turquoise;
+}
+
+.submit-chat-button {
+  border-radius: 10px;
+  color: white;
+  background: #09d3ac;
+  border: none;
 }

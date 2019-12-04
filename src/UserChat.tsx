@@ -2,12 +2,13 @@ import React, { useEffect, useState, Fragment } from "react";
 import "./App.css";
 import { RandomAvatar, RandomAvatarOptions, IMessageData } from "./Main";
 
-const createMessageElement = (messageData: IMessageData) => {
+const createMessageElement = (messageData: IMessageData, author: string) => {
+  const isMyMessage = messageData.author === author;
   return (
     <div
       key={messageData.msg + messageData.timestamp}
       className="d-flex flex-row align-items-center"
-      // style={{ opacity: isMyMessage ? 0.5 : 1 }}
+      style={{ opacity: isMyMessage ? 0.5 : 1 }}
     >
       <img width="30px" className="mr-2" src={messageData.avatarURL} />
       <b>[{messageData.author}] </b>{" "}
@@ -31,7 +32,7 @@ const UserChat: React.FC<{
 
   return (
     <Fragment>
-      <section>
+      <section className="d-flex flex-row align-items-center justify-content-center">
         <h2>Talking to {recipient.username}</h2>
         <RandomAvatar {...decodedAvatarOptionsJSON} />
       </section>
@@ -42,6 +43,7 @@ const UserChat: React.FC<{
           onChange={e => changeInputValue(e.target.value)}
         ></input>
         <button
+          className="ml-2 submit-chat-button"
           onClick={e => {
             changeInputValue("");
             socket.send(
@@ -57,9 +59,9 @@ const UserChat: React.FC<{
           Submit Message
         </button>
       </form>
-      <div id="message-board">
+      <div className="message-board">
         {socketError && <h2 className="text-danger">SOCKET ERROR</h2>}
-        {messages.map(messageData => createMessageElement(messageData))}
+        {messages.map(messageData => createMessageElement(messageData, author))}
       </div>
     </Fragment>
   );
