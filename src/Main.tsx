@@ -30,7 +30,7 @@ if (!localStorageAvatarOptions)
   localStorage.setItem("messaging-app-user-config-avatarOptions", JSON.stringify(RandomAvatarOptions));
 
 const socket = new WebSocket(
-  `ws://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
+  `wss://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
 );
 
 export interface IClientUser {
