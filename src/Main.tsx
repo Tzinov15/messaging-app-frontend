@@ -12,52 +12,61 @@ TODO: Fix the CSS grid and responsive positioning of everything to not look bad
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import Chance from "chance";
-import { RandomAvatar, RandomAvatarOptions } from "./AvatarGenerator";
+import { RandomAvatar, RandomAvatarOptions, AvatarProps } from "./AvatarGenerator";
 import UserChat from "./UserChat";
 const chance = new Chance();
 
-export { RandomAvatar, RandomAvatarOptions };
-
 const randomUsername = chance.word({ length: 6 });
-const localStorageUsername = sessionStorage.getItem(
-  "messaging-app-user-config-username"
-);
+const localStorageUsername = localStorage.getItem("messaging-app-user-config-username");
 
-const localStorageAvatarOptions = sessionStorage.getItem(
-  "messaging-app-user-config-avatarOptions"
-);
+const localStorageAvatarOptions = localStorage.getItem("messaging-app-user-config-avatarOptions");
 
-// re-use the sessionStorage versions of username and avatarOptions
-const username = localStorageUsername ? localStorageUsername : randomUsername;
-const avatarOptions = localStorageAvatarOptions
-  ? JSON.parse(localStorageAvatarOptions)
-  : RandomAvatarOptions;
+// re-use the localStorage versions of username and avatarOptions
+export const username = localStorageUsername ? localStorageUsername : randomUsername;
+export const avatarOptions = localStorageAvatarOptions ? JSON.parse(localStorageAvatarOptions) : RandomAvatarOptions;
 
-if (!localStorageUsername)
-  sessionStorage.setItem("messaging-app-user-config-username", username);
+if (!localStorageUsername) localStorage.setItem("messaging-app-user-config-username", username);
 if (!localStorageAvatarOptions)
-  sessionStorage.setItem(
-    "messaging-app-user-config-avatarOptions",
-    JSON.stringify(RandomAvatarOptions)
-  );
+  localStorage.setItem("messaging-app-user-config-avatarOptions", JSON.stringify(RandomAvatarOptions));
 
-const socket = new WebSocket(
-  `ws://localhost:9191?username=${username}&avatarOptions=${JSON.stringify(
-    avatarOptions
-  )}`
-);
-
-export interface IMessageData {
-  msg: string;
-  recipient: string;
-  author: string;
-  avatarURL?: string;
-  timestamp: string;
-}
+const socket = new WebSocket(`ws://localhost:9191?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`);
 
 export interface IClientUser {
   username: string;
-  avatar: string;
+  avatar: AvatarProps;
+}
+
+// Shape of the data that comes in to a client from the Server
+// See IOutgoingMessageData on the Server
+export interface IIncomingMessageData {
+  author: string;
+  recipient: string;
+  msg: string;
+  timestamp: string;
+  action: "USER_MESSAGE";
+  avatarOptions: AvatarProps;
+}
+
+// Shape of the data that comes in to a client from the Server
+// See IOutgoingMessageData on the Server
+export interface IIncomingMessageData {
+  author: string;
+  recipient: string;
+  msg: string;
+  timestamp: string;
+  action: "USER_MESSAGE";
+  avatarOptions: AvatarProps;
+}
+
+export interface IIncomingNewClientData {
+  action: "CLIENT_NEW";
+  messages: IIncomingMessageData[];
+  users: IClientUser[];
+}
+
+export interface IIncomingConnectedClientData {
+  action: "CLIENT_CONNECT" | "CLIENT_DISCONNECT";
+  users: IClientUser[];
 }
 
 const Main: React.FC = () => {
@@ -65,12 +74,8 @@ const Main: React.FC = () => {
   const [socketError, setSocketError] = useState<boolean>(false);
   const [activeChat, setActiveChat] = useState<boolean>(false); // This should be in Redux store for the reason below
   const [unreadUsers, setUnreadUsers] = useState<string[]>([]); // This should be in Redux store. Turned off everytime we click that user. Turned on everytime we get a message from that user and we're NOT actively talking to them
-  const [messages, updateMessages] = useState<IMessageData[]>([]);
-  const [activeRecipient, setActiveRecipient] = useState<{
-    // This should be in Redux store
-    username: string;
-    avatar: string;
-  }>({ username: "", avatar: "" });
+  const [messages, updateMessages] = useState<IIncomingMessageData[]>([]);
+  const [activeRecipient, setActiveRecipient] = useState<IClientUser | null>(null);
   useEffect(() => {
     // Connection opened
     socket.addEventListener("open", function(event) {
@@ -79,36 +84,25 @@ const Main: React.FC = () => {
 
     // Listen for messages
     socket.addEventListener("message", function(event) {
-      const messageData = JSON.parse(event.data);
-      const { action } = messageData;
-      switch (action) {
+      const messageData: IIncomingMessageData | IIncomingConnectedClientData | IIncomingNewClientData = JSON.parse(
+        event.data
+      );
+      switch (messageData.action) {
         // case I_CONNECTED // Need new case for when this particular socket has been first acknowledged by the server because in that case the server will bee sending message data
         case "CLIENT_CONNECT": // New User -> this means that the server is updating us to tell us that there is a new kid in the neighborhood and is giving us their username and avatar info so we can render a new entry for them
         case "CLIENT_DISCONNECT":
           setActiveClients(messageData.users);
           break;
         case "CLIENT_NEW":
-          console.log(
-            "I am a client that JUST connected and here are the messages that the server gave me "
-          );
-          console.log(messageData.messages);
           setActiveClients(messageData.users);
           updateMessages(messages => [...messages, ...messageData.messages]);
           break;
         case "USER_MESSAGE":
-          if (activeRecipient.username !== messageData.author) {
+          if (!activeRecipient || activeRecipient.username !== messageData.author) {
             setUnreadUsers(unreadUsers => [...unreadUsers, messageData.author]);
           }
           // Update with the new message that came in from the user
-          updateMessages(messages => [
-            ...messages,
-            {
-              msg: messageData.msg,
-              recipient: messageData.recipient,
-              author: messageData.author,
-              timestamp: messageData.timestamp
-            }
-          ]);
+          updateMessages(messages => [...messages, messageData]);
           break;
       }
     });
@@ -119,6 +113,8 @@ const Main: React.FC = () => {
     socket.addEventListener("error", function(event) {
       setSocketError(true);
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -140,9 +136,6 @@ const Main: React.FC = () => {
             {activeClients
               .filter(client => client.username !== username)
               .map(client => {
-                const decodedAvatarOptionsJSON = JSON.parse(
-                  decodeURI(client.avatar)
-                );
                 return (
                   <div
                     onClick={() => {
@@ -153,40 +146,31 @@ const Main: React.FC = () => {
                       });
                       // TODO: All this logic of updating the unreadusers array needs to be cleaned up, updated
                       const updatedUnreadUsersArray = [...unreadUsers];
-                      updatedUnreadUsersArray.splice(
-                        unreadUsers.indexOf(client.username)
-                      );
+                      updatedUnreadUsersArray.splice(unreadUsers.indexOf(client.username));
                       setUnreadUsers(updatedUnreadUsersArray);
                     }}
                     key={client.username}
                     // Gray out the person we're currently talking to
                     className={`${
-                      client.username === activeRecipient.username
-                        ? "user-active"
-                        : ""
+                      activeRecipient && client.username === activeRecipient.username ? "user-active" : ""
                     } availableChatUser  ${
                       // Don't show "new" message from a person if we're already talking to that person
-                      unreadUsers.includes(client.username) &&
-                      client.username !== username
-                        ? "unread-user"
-                        : ""
+                      unreadUsers.includes(client.username) && client.username !== username ? "unread-user" : ""
                     }`}
                   >
-                    <RandomAvatar {...decodedAvatarOptionsJSON} />
+                    <RandomAvatar {...client.avatar} />
                     <p>{client.username}</p>
                   </div>
                 );
               })}
           </div>
         </section>
-        {activeChat && (
+        {activeChat && activeRecipient && (
           <section className="chat-section">
             <UserChat
               socket={socket}
               messages={messages.filter(
-                message =>
-                  message.author === activeRecipient.username ||
-                  message.recipient === activeRecipient.username
+                message => message.author === activeRecipient.username || message.recipient === activeRecipient.username
               )}
               updateMessages={updateMessages}
               author={username}

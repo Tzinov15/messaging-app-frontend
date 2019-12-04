@@ -46,15 +46,7 @@ const avatarOptions = {
     "ShortHairTheCaesar",
     "ShortHairTheCaesarSidePart"
   ],
-  accessoriesType: [
-    "Blank",
-    "Kurt",
-    "Prescription01",
-    "Prescription02",
-    "Round",
-    "Sunglasses",
-    "Wayfarers"
-  ],
+  accessoriesType: ["Blank", "Kurt", "Prescription01", "Prescription02", "Round", "Sunglasses", "Wayfarers"],
   hatColor: [
     "Black",
     "Blue01",
@@ -84,24 +76,8 @@ const avatarOptions = {
     "Red",
     "SilverGray"
   ],
-  facialHairType: [
-    "Blank",
-    "BeardMedium",
-    "BeardLight",
-    "BeardMajestic",
-    "MoustacheFancy",
-    "MoustacheMagnum"
-  ],
-  facialHairColor: [
-    "Auburn",
-    "Black",
-    "Blonde",
-    "BlondeGolden",
-    "Brown",
-    "BrownDark",
-    "Platinum",
-    "Red"
-  ],
+  facialHairType: ["Blank", "BeardMedium", "BeardLight", "BeardMajestic", "MoustacheFancy", "MoustacheMagnum"],
+  facialHairColor: ["Auburn", "Black", "Blonde", "BlondeGolden", "Brown", "BrownDark", "Platinum", "Red"],
   clotheType: [
     "BlazerShirt",
     "BlazerSweater",
@@ -185,15 +161,7 @@ const avatarOptions = {
     "Twinkle",
     "Vomit"
   ],
-  skinColor: [
-    "Tanned",
-    "Yellow",
-    "Pale",
-    "Light",
-    "Brown",
-    "DarkBrown",
-    "Black"
-  ]
+  skinColor: ["Tanned", "Yellow", "Pale", "Light", "Brown", "DarkBrown", "Black"]
 };
 
 export const RandomAvatarOptions = {
@@ -210,6 +178,12 @@ export const RandomAvatarOptions = {
   mouthType: randomOptionFromList(avatarOptions.mouthType),
   skinColor: randomOptionFromList(avatarOptions.skinColor)
 };
+
+export type AvatarProps = typeof RandomAvatarOptions;
 export const RandomAvatar = (props: typeof RandomAvatarOptions) => (
   <Avatar {...props} style={{ width: "100px", height: "100px" }} />
+);
+
+export const RandomAvatarSmall = (props: typeof RandomAvatarOptions) => (
+  <Avatar {...props} style={{ width: "50px", height: "50px" }} />
 );
