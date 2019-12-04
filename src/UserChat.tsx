@@ -42,8 +42,14 @@ const UserChat: React.FC<{
         <RandomAvatar {...recipient.avatar} />
       </section>
       <form onSubmit={e => e.preventDefault()}>
-        <input className="mb-3" value={inputValue} onChange={e => changeInputValue(e.target.value)}></input>
+        <input
+          data-testid="chat-input"
+          className="mb-3"
+          value={inputValue}
+          onChange={e => changeInputValue(e.target.value)}
+        ></input>
         <button
+          data-testid="chat-button-submit"
           className="ml-2 submit-chat-button"
           onClick={e => {
             const outgoingMessage: IOutgoingMessageData = {
@@ -59,7 +65,9 @@ const UserChat: React.FC<{
           Submit Message
         </button>
       </form>
-      <div className="message-board">{messages.map(messageData => createMessageElement(messageData, author))}</div>
+      <div data-testid="message-board" className="message-board">
+        {messages.map(messageData => createMessageElement(messageData, author))}
+      </div>
     </Fragment>
   );
 };

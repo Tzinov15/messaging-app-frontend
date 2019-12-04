@@ -126,7 +126,7 @@ const Main: React.FC = () => {
       <header className="header">
         <div className="">
           <p className="mb-0">
-            Welcome! Your username is <b>{username}</b> and this is your avatar!
+            Welcome! Your username is <b data-testid="random-username">{username}</b> and this is your avatar!
           </p>
           <p className="mb-0" style={{ fontSize: ".90rem", color: "#21242b" }}>
             Click on any of the active clients below to chat with them
@@ -144,6 +144,7 @@ const Main: React.FC = () => {
               .map(client => {
                 return (
                   <div
+                    data-testid={`user-avatar-${client.username}`}
                     onClick={() => {
                       setActiveChat(true);
                       setActiveRecipient({
@@ -172,7 +173,7 @@ const Main: React.FC = () => {
           </div>
         </section>
         {activeChat && activeRecipient && (
-          <section className="chat-section">
+          <section className="chat-section" data-testid="user-chat-section">
             <UserChat
               socket={socket}
               messages={messages.filter(
