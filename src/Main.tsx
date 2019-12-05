@@ -1,68 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import Chance from "chance";
-import { RandomAvatar, RandomAvatarOptions, AvatarProps } from "./AvatarGenerator";
+import { RandomAvatar, AvatarProps } from "./AvatarGenerator";
+import { avatarOptions, username } from "./manageUserInStorage";
+import {
+  IClientUser,
+  IIncomingConnectedClientData,
+  IIncomingMessageData,
+  IIncomingNewClientData,
+  IIncomingPongMessage
+} from "./DataInterfaces";
 import UserChat from "./UserChat";
-const chance = new Chance();
-
-const randomUsername = chance.word({ length: 6 });
-const localStorageUsername = localStorage.getItem("messaging-app-user-config-username");
-
-const localStorageAvatarOptions = localStorage.getItem("messaging-app-user-config-avatarOptions");
-
-// re-use the localStorage versions of username and avatarOptions
-export const username = localStorageUsername ? localStorageUsername : randomUsername;
-export const avatarOptions = localStorageAvatarOptions ? JSON.parse(localStorageAvatarOptions) : RandomAvatarOptions;
-
-if (!localStorageUsername) localStorage.setItem("messaging-app-user-config-username", username);
-if (!localStorageAvatarOptions)
-  localStorage.setItem("messaging-app-user-config-avatarOptions", JSON.stringify(RandomAvatarOptions));
 
 const socket = new WebSocket(
   `wss://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
 );
-
-export interface IClientUser {
-  username: string;
-  avatar: AvatarProps;
-}
-
-// Shape of the data that comes in to a client from the Server
-// See IOutgoingMessageData on the Server
-export interface IIncomingMessageData {
-  author: string;
-  recipient: string;
-  msg: string;
-  timestamp: string;
-  action: "USER_MESSAGE";
-  avatarOptions: AvatarProps;
-}
-
-// Shape of the data that comes in to a client from the Server
-// See IOutgoingMessageData on the Server
-export interface IIncomingMessageData {
-  author: string;
-  recipient: string;
-  msg: string;
-  timestamp: string;
-  action: "USER_MESSAGE";
-  avatarOptions: AvatarProps;
-}
-
-export interface IIncomingNewClientData {
-  action: "CLIENT_NEW";
-  messages: IIncomingMessageData[];
-  users: IClientUser[];
-}
-
-export interface IIncomingConnectedClientData {
-  action: "CLIENT_CONNECT" | "CLIENT_DISCONNECT";
-  users: IClientUser[];
-}
-
-export interface IIncomingPongMessage {
-  action: "PONG";
-}
 
 const Main: React.FC = () => {
   const [activeClients, setActiveClients] = useState<IClientUser[]>([]); // This should be in Redux store, will be easier to manage
@@ -121,69 +72,75 @@ const Main: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const Header = () => (
+    <header className="header">
+      <div className="">
+        <p className="mb-0">
+          Welcome! Your username is <b data-testid="random-username">{username}</b> and this is your avatar!
+        </p>
+        <p className="mb-0" style={{ fontSize: ".90rem", color: "#21242b" }}>
+          Click on any of the active clients below to chat with them
+        </p>
+      </div>
+      <RandomAvatar {...avatarOptions} />
+      {socketError && <h1 className="text-danger">SOCKET ERROR</h1>}
+    </header>
+  );
+
+  const AvailableUsersSection = () => (
+    <section className="available-users-section">
+      <h4 className="mb-3">Available Connected Clients:</h4>
+      <div className="mt-3 avatar-grid ">
+        {activeClients
+          .filter(client => client.username !== username)
+          .map(client => {
+            return (
+              <div
+                data-testid={`user-avatar-${client.username}`}
+                onClick={() => {
+                  setActiveChat(true);
+                  setActiveRecipient({
+                    username: client.username,
+                    avatar: client.avatar
+                  });
+                  // TODO: All this logic of updating the unreadusers array needs to be cleaned up, updated
+                  const updatedUnreadUsersArray = [...unreadUsers];
+                  updatedUnreadUsersArray.splice(unreadUsers.indexOf(client.username));
+                  setUnreadUsers(updatedUnreadUsersArray);
+                }}
+                key={client.username}
+                // Gray out the person we're currently talking to
+                className={`${
+                  activeRecipient && client.username === activeRecipient.username ? "user-active" : ""
+                } availableChatUser  ${
+                  // Don't show "new" message from a person if we're already talking to that person
+                  unreadUsers.includes(client.username) && client.username !== username ? "unread-user" : ""
+                }`}
+              >
+                <RandomAvatar {...client.avatar} />
+                <p>{client.username}</p>
+              </div>
+            );
+          })}
+      </div>
+    </section>
+  );
+
   return (
     <div className="Main">
-      <header className="header">
-        <div className="">
-          <p className="mb-0">
-            Welcome! Your username is <b data-testid="random-username">{username}</b> and this is your avatar!
-          </p>
-          <p className="mb-0" style={{ fontSize: ".90rem", color: "#21242b" }}>
-            Click on any of the active clients below to chat with them
-          </p>
-        </div>
-        <RandomAvatar {...avatarOptions} />
-        {socketError && <h1 className="text-danger">SOCKET ERROR</h1>}
-      </header>
+      <Header />
       <main className="body-content">
-        <section className="available-users-section">
-          <h4 className="mb-3">Available Connected Clients:</h4>
-          <div className="mt-3 avatar-grid ">
-            {activeClients
-              .filter(client => client.username !== username)
-              .map(client => {
-                return (
-                  <div
-                    data-testid={`user-avatar-${client.username}`}
-                    onClick={() => {
-                      setActiveChat(true);
-                      setActiveRecipient({
-                        username: client.username,
-                        avatar: client.avatar
-                      });
-                      // TODO: All this logic of updating the unreadusers array needs to be cleaned up, updated
-                      const updatedUnreadUsersArray = [...unreadUsers];
-                      updatedUnreadUsersArray.splice(unreadUsers.indexOf(client.username));
-                      setUnreadUsers(updatedUnreadUsersArray);
-                    }}
-                    key={client.username}
-                    // Gray out the person we're currently talking to
-                    className={`${
-                      activeRecipient && client.username === activeRecipient.username ? "user-active" : ""
-                    } availableChatUser  ${
-                      // Don't show "new" message from a person if we're already talking to that person
-                      unreadUsers.includes(client.username) && client.username !== username ? "unread-user" : ""
-                    }`}
-                  >
-                    <RandomAvatar {...client.avatar} />
-                    <p>{client.username}</p>
-                  </div>
-                );
-              })}
-          </div>
-        </section>
+        <AvailableUsersSection />
         {activeChat && activeRecipient && (
-          <section className="chat-section" data-testid="user-chat-section">
-            <UserChat
-              socket={socket}
-              messages={messages.filter(
-                message => message.author === activeRecipient.username || message.recipient === activeRecipient.username
-              )}
-              updateMessages={updateMessages}
-              author={username}
-              recipient={activeRecipient}
-            />
-          </section>
+          <UserChat
+            socket={socket}
+            messages={messages.filter(
+              message => message.author === activeRecipient.username || message.recipient === activeRecipient.username
+            )}
+            updateMessages={updateMessages}
+            author={username}
+            recipient={activeRecipient}
+          />
         )}
       </main>
     </div>

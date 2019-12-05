@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from "react";
 import "./App.css";
-import { IIncomingMessageData, IClientUser, avatarOptions } from "./Main";
+import { IIncomingMessageData, IClientUser } from "./DataInterfaces";
+import { avatarOptions } from "./manageUserInStorage";
 import { AvatarProps, RandomAvatarSmall, RandomAvatar } from "./AvatarGenerator";
 
 // See IIncomingData on the server side
@@ -36,7 +37,7 @@ const UserChat: React.FC<{
   const [inputValue, changeInputValue] = useState<string>("");
 
   return (
-    <Fragment>
+    <section className="chat-section" data-testid="user-chat-section">
       <section className="d-flex flex-row align-items-center justify-content-center">
         <h2>Talking to {recipient.username}</h2>
         <RandomAvatar {...recipient.avatar} />
@@ -68,7 +69,7 @@ const UserChat: React.FC<{
       <div data-testid="message-board" className="message-board">
         {messages.map(messageData => createMessageElement(messageData, author))}
       </div>
-    </Fragment>
+    </section>
   );
 };
 
