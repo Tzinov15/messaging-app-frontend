@@ -35,6 +35,7 @@ export interface IIncomingNewClientData {
 export interface IIncomingConnectedClientData {
   action: "CLIENT_CONNECT" | "CLIENT_DISCONNECT";
   users: IClientUser[];
+  updatedClient: string;
 }
 
 export interface IIncomingPongMessage {
