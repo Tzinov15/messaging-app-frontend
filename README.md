@@ -4,6 +4,30 @@
 
 - Avataaars.io is super cool for generating random avatars if needed
 - How to use `useEffect` to re-create `componentDidMount` behavior
+- More deep dive on `useEffect`
+  `useEffect` gets called AFTER render. A `console.log()` right before the `return()` command will log, and then any console.log statements inside of `useEffect()` will run
+
+  After a render and before calling an effect, React will compare the array of values defined in the second parameter of the effect with the array defined in the same effect from the previous render. React will only call the effect when any value of the array has changed since the previous render.
+
+  The same way, if we only want our effect to be called only after the first render, we have to pass an empty array [] (which never changes) as second parameter.
+
+  Even if we pass `[]` as the 2nd parameter to `useEffect`, which will only cause the effect function to be called once per component, it will still be called _after_ the render, so it doesn't quite act like componentDidMount which (I believe?) gets called before the render
+
+  An effect can optionally return a function (the cleanup function) that React will call when the component unmounts and before running the effect next time. In the example, our effect returns a function that unsubscribes it from the window resize events.
+
+  https://blog.logrocket.com/react-hooks-cheat-sheet-unlock-solutions-to-common-problems-af4caf699e70/
+
+  https://medium.com/@rossbulat/react-hooks-managing-web-sockets-with-useeffect-and-usestate-2dfc30eeceec
+
+  useEffect simply takes a function as its one required argument. Everything within this argument will be run upon the componentDidMount and componentDidUpdate phases.
+  Within this function, we can return another function that acts as component cleanup upon unmounting: E.g. the componentWillUnmount phase.
+  Finally, after our function, useEffect can also take an optional array as its second argument, containing state values that must change for the re-render to take place.
+
+  Why you can't reliable `console.log(stateVariable)` immediately after updating it using setState (or in React Hooks useState)
+  https://stackoverflow.com/a/54867900
+
+  When exactly does React clean up an effect? React performs the cleanup when the component unmounts. However, as we learned earlier, effects run for every render and not just once. This is why React also cleans up effects from the previous render before running the effects next time. We’ll discuss why this helps avoid bugs and how to opt out of this behavior in case it creates performance issues later below.
+
 - Learned that React Router `state` object that you push when you hit routes must be serializable
   https://stackoverflow.com/questions/24425885/failed-to-execute-pushstate-on-history-error-when-using-window-history-pushs
 - https://medium.com/the-andela-way/understanding-the-fundamentals-of-routing-in-react-b29f806b157e
@@ -16,6 +40,9 @@
 ## Resources Used
 
 https://medium.com/@rossbulat/react-hooks-managing-web-sockets-with-useeffect-and-usestate-2dfc30eeceec
+
+https://medium.com/simars/react-hooks-manage-life-cycle-events-tricks-and-tips-7ed13f52ba12
+https://medium.com/trabe/react-useeffect-hook-44d8aa7cccd0
 
 ## Consideration
 
