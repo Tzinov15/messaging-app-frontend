@@ -87,41 +87,39 @@ const Main: React.FC = () => {
     </header>
   );
 
+  const UserAvatarIcon = (client: IClientUser) => (
+    <div
+      key={client.username}
+      data-testid={`user-avatar-${client.username}`}
+      onClick={() => {
+        setActiveChat(true);
+        setActiveRecipient({
+          username: client.username,
+          avatar: client.avatar
+        });
+        // TODO: All this logic of updating the unreadusers array needs to be cleaned up, updated
+        const updatedUnreadUsersArray = [...unreadUsers];
+        updatedUnreadUsersArray.splice(unreadUsers.indexOf(client.username));
+        setUnreadUsers(updatedUnreadUsersArray);
+      }}
+      // Gray out the person we're currently talking to
+      className={`${
+        activeRecipient && client.username === activeRecipient.username ? "user-active" : ""
+      } availableChatUser  ${
+        // Don't show "new" message from a person if we're already talking to that person
+        unreadUsers.includes(client.username) && client.username !== username ? "unread-user" : ""
+      }`}
+    >
+      <RandomAvatar {...client.avatar} />
+      <p>{client.username}</p>
+    </div>
+  );
+
   const AvailableUsersSection = () => (
     <section className="available-users-section">
       <h4 className="mb-3">Available Connected Clients:</h4>
       <div className="mt-3 avatar-grid ">
-        {activeClients
-          .filter(client => client.username !== username)
-          .map(client => {
-            return (
-              <div
-                data-testid={`user-avatar-${client.username}`}
-                onClick={() => {
-                  setActiveChat(true);
-                  setActiveRecipient({
-                    username: client.username,
-                    avatar: client.avatar
-                  });
-                  // TODO: All this logic of updating the unreadusers array needs to be cleaned up, updated
-                  const updatedUnreadUsersArray = [...unreadUsers];
-                  updatedUnreadUsersArray.splice(unreadUsers.indexOf(client.username));
-                  setUnreadUsers(updatedUnreadUsersArray);
-                }}
-                key={client.username}
-                // Gray out the person we're currently talking to
-                className={`${
-                  activeRecipient && client.username === activeRecipient.username ? "user-active" : ""
-                } availableChatUser  ${
-                  // Don't show "new" message from a person if we're already talking to that person
-                  unreadUsers.includes(client.username) && client.username !== username ? "unread-user" : ""
-                }`}
-              >
-                <RandomAvatar {...client.avatar} />
-                <p>{client.username}</p>
-              </div>
-            );
-          })}
+        {activeClients.filter(client => client.username !== username).map(UserAvatarIcon)}
       </div>
     </section>
   );
