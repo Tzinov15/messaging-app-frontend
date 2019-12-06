@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { IIncomingMessageData, IClientUser } from "./DataInterfaces";
 import { avatarOptions } from "./manageUserInStorage";
