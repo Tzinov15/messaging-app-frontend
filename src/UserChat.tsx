@@ -54,11 +54,12 @@ const UserChat: React.FC<{
         <h2>Talking to {recipient.username}</h2>
         <RandomAvatar {...recipient.avatar} />
       </section>
-      <form onSubmit={e => e.preventDefault()}>
+      <form className="mb-3 d-flex flex-row align-items-center" onSubmit={e => e.preventDefault()}>
         <input
           data-testid="chat-input"
-          className="mb-3"
+          className="flex-grow-1 submit-chat-input"
           value={inputValue}
+          placeholder={`Write message to ${recipient.username}...`}
           onChange={e => changeInputValue(e.target.value)}
         ></input>
         <button
