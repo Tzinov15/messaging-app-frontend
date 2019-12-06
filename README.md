@@ -46,6 +46,18 @@ https://medium.com/trabe/react-useeffect-hook-44d8aa7cccd0
 
 ## Consideration
 
+## Testing
+
+To run Cypress UI tests (which for the time being will run against the production server)
+
+Run the UI app  
+`yarn start`
+
+Open up Cypress  
+`yarn cypress open`
+
+Select the **MainApp** to run the base smoke test
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
