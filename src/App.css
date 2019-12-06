@@ -171,3 +171,9 @@ header {
   background: #09d3ac;
   border: none;
 }
+
+.message-board {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
