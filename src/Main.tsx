@@ -106,20 +106,28 @@ const Main: React.FC = () => {
     </header>
   );
 
-  const UserAvatarIcon = (client: IClientUser) => (
+  const onUserAvatarIconEnter = (client: IClientUser) => {
+    setActiveChat(true);
+    setActiveRecipient({
+      username: client.username,
+      avatar: client.avatar
+    });
+    // TODO: All this logic of updating the unreadusers array needs to be cleaned up, updated
+    const updatedUnreadUsersArray = [...unreadUsers];
+    updatedUnreadUsersArray.splice(unreadUsers.indexOf(client.username));
+    setUnreadUsers(updatedUnreadUsersArray);
+  };
+
+  const UserAvatarIcon = (client: IClientUser, index: number) => (
     <div
       key={client.username}
       data-testid={`user-avatar-${client.username}`}
+      tabIndex={index + 1}
+      onKeyPress={e => {
+        if (e.keyCode == 13 || e.which === 13) onUserAvatarIconEnter(client);
+      }}
       onClick={() => {
-        setActiveChat(true);
-        setActiveRecipient({
-          username: client.username,
-          avatar: client.avatar
-        });
-        // TODO: All this logic of updating the unreadusers array needs to be cleaned up, updated
-        const updatedUnreadUsersArray = [...unreadUsers];
-        updatedUnreadUsersArray.splice(unreadUsers.indexOf(client.username));
-        setUnreadUsers(updatedUnreadUsersArray);
+        onUserAvatarIconEnter(client);
       }}
       // Gray out the person we're currently talking to
       className={`${

@@ -29,7 +29,7 @@ h5 {
 
 .chat-section {
   grid-area: chat-section;
-  padding: 1rem;
+  padding: 2rem;
 }
 
 header {
@@ -133,12 +133,13 @@ header {
 }
 
 .availableChatUser {
+  position: relative;
   transition: 0.3s;
+  opacity: 0.5;
 }
 
-.availableChatUser {
-  position: relative;
-  opacity: 0.5;
+.availableChatUser:focus {
+  background: rgba(3.5%, 82.7%, 67.5%, 0.5);
 }
 
 .user-active {
@@ -170,6 +171,19 @@ header {
   color: white;
   background: #09d3ac;
   border: none;
+}
+
+.submit-chat-input {
+  border-radius: 10px;
+  background: #21242b;
+  padding: 0.5rem;
+  color: #09d3ac;
+  border: none;
+}
+
+.submit-chat-input:focus {
+  outline-style: none;
+  box-shadow: 0 0 3px 2px #09d3ac !important;
 }
 
 .message-board {
