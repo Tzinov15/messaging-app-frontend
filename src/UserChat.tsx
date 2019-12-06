@@ -1,6 +1,7 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import "./App.css";
-import { IIncomingMessageData, IClientUser, avatarOptions } from "./Main";
+import { IIncomingMessageData, IClientUser } from "./DataInterfaces";
+import { avatarOptions } from "./manageUserInStorage";
 import { AvatarProps, RandomAvatarSmall, RandomAvatar } from "./AvatarGenerator";
 
 // See IIncomingData on the server side
@@ -26,7 +27,6 @@ const createMessageElement = (messageData: IIncomingMessageData, author: string)
   );
 };
 
-// TODO: This component should not be handling any socket message receiving etc. That should all be done by Main.tsx and flushed into Redux
 const UserChat: React.FC<{
   socket: WebSocket;
   author: string;
@@ -37,14 +37,20 @@ const UserChat: React.FC<{
   const [inputValue, changeInputValue] = useState<string>("");
 
   return (
-    <Fragment>
+    <section className="chat-section" data-testid="user-chat-section">
       <section className="d-flex flex-row align-items-center justify-content-center">
         <h2>Talking to {recipient.username}</h2>
         <RandomAvatar {...recipient.avatar} />
       </section>
       <form onSubmit={e => e.preventDefault()}>
-        <input className="mb-3" value={inputValue} onChange={e => changeInputValue(e.target.value)}></input>
+        <input
+          data-testid="chat-input"
+          className="mb-3"
+          value={inputValue}
+          onChange={e => changeInputValue(e.target.value)}
+        ></input>
         <button
+          data-testid="chat-button-submit"
           className="ml-2 submit-chat-button"
           onClick={e => {
             const outgoingMessage: IOutgoingMessageData = {
@@ -60,8 +66,10 @@ const UserChat: React.FC<{
           Submit Message
         </button>
       </form>
-      <div className="message-board">{messages.map(messageData => createMessageElement(messageData, author))}</div>
-    </Fragment>
+      <div data-testid="message-board" className="message-board">
+        {messages.map(messageData => createMessageElement(messageData, author))}
+      </div>
+    </section>
   );
 };
 
