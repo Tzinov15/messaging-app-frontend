@@ -185,5 +185,5 @@ export const RandomAvatar = (props: typeof RandomAvatarOptions) => (
 );
 
 export const RandomAvatarSmall = (props: typeof RandomAvatarOptions) => (
-  <Avatar {...props} style={{ width: "50px", height: "50px" }} />
+  <Avatar {...props} style={{ width: "35px", height: "35px" }} />
 );

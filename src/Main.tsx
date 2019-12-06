@@ -102,7 +102,7 @@ const Main: React.FC = () => {
         </p>
       </div>
       <RandomAvatar {...avatarOptions} />
-      {socketError && <h1 className="text-danger">SOCKET ERROR</h1>}
+      {socketError && <h5 className="text-danger">Socket disconnected, refresh to reconnect</h5>}
     </header>
   );
 

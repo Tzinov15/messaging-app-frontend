@@ -3,6 +3,7 @@ import "./App.css";
 import { IIncomingMessageData, IClientUser } from "./DataInterfaces";
 import { avatarOptions } from "./manageUserInStorage";
 import { AvatarProps, RandomAvatarSmall, RandomAvatar } from "./AvatarGenerator";
+import moment from "moment";
 
 // See IIncomingData on the server side
 export interface IOutgoingMessageData {
@@ -14,15 +15,26 @@ export interface IOutgoingMessageData {
 
 const createMessageElement = (messageData: IIncomingMessageData, author: string) => {
   const isMyMessage = messageData.author === author;
+  const timeFromServer = messageData.timestamp;
+  const localTime = moment(timeFromServer)
+    .local()
+    .format("MMM Do YY, h:mm:ss a");
   return (
     <div
       key={messageData.msg + messageData.timestamp}
-      className="d-flex flex-row align-items-center"
-      style={{ opacity: isMyMessage ? 0.5 : 1 }}
+      style={{ maxWidth: "80%" }}
+      className={`d-flex flex-column justify-content-start my-1 ${
+        !isMyMessage ? "align-self-end align-items-end" : "align-items-start"
+      }`}
     >
-      <RandomAvatarSmall {...messageData.avatarOptions} />
-      <b>[{messageData.author}] </b> <p className="mb-0 mx-3">{messageData.msg}</p>
-      <i className="text-secondary">{messageData.timestamp}</i>
+      <div className="d-flex align-items-center justify-content-start">
+        <RandomAvatarSmall {...messageData.avatarOptions} />
+        <b className="ml-1" style={{ color: isMyMessage ? "white" : "#09d3ac" }}>
+          [{messageData.author}]{" "}
+        </b>{" "}
+        <p className="mb-0 mx-3">{messageData.msg}</p>
+      </div>
+      <i className="text-secondary">{localTime}</i>
     </div>
   );
 };
