@@ -33,11 +33,12 @@ header {
   display: flex;
   flex-direction: row;
   grid-area: header;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding: 1rem;
   align-items: center;
-  justify-content: center;
-  background: #09d3ac;
+  justify-content: space-around;
+  color: white;
+  background: #22242c;
+  border-bottom: #282c34 solid 1px;
 }
 /* if the screen is less than 700px  */
 @media only screen and (max-width: 870px) {
@@ -126,7 +127,7 @@ header {
 }
 
 .App-link {
-  color: #09d3ac;
+  color: #0ae589;
 }
 
 .availableChatUser {
@@ -137,7 +138,7 @@ header {
 
 .user-active {
   opacity: 1;
-  color: #09d3ac;
+  color: #0ae589;
   font-weight: 500;
 }
 
@@ -162,7 +163,7 @@ header {
 .submit-chat-button {
   border-radius: 10px;
   color: white;
-  background: #09d3ac;
+  background: #0ae589;
   border: none;
 }
 
@@ -170,13 +171,13 @@ header {
   border-radius: 10px;
   background: #21242b;
   padding: 0.5rem;
-  color: #09d3ac;
+  color: #0ae589;
   border: none;
 }
 
 .submit-chat-input:focus {
   outline-style: none;
-  box-shadow: 0 0 3px 2px #09d3ac !important;
+  box-shadow: 0 0 3px 2px #0ae589 !important;
 }
 
 .chat-section {
@@ -196,4 +197,16 @@ header {
   align-items: flex-start;
   overflow-y: scroll;
   height: 100%;
+}
+
+.logo-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-self: flex-start;
+  color: #0ae589;
+}
+
+.logo-title-text {
+  font-family: "Major Mono Display";
 }

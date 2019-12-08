@@ -165,7 +165,7 @@ const avatarOptions = {
 };
 
 export const RandomAvatarOptions = {
-  avatarStyle: "Circle",
+  avatarStyle: "Transparent",
   topType: randomOptionFromList(avatarOptions.topType),
   accessoriesType: randomOptionFromList(avatarOptions.accessoriesType),
   hairColor: randomOptionFromList(avatarOptions.hairColor),
