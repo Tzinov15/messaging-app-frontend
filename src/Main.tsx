@@ -13,8 +13,7 @@ import Header from "./Header";
 import AvailableUsersSection from "./AvailableUsersSection";
 
 const socket = new WebSocket(
-  // `wss://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
-  `ws://192.168.1.4:9090?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
+  `wss://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
 );
 
 const Main: React.FC = () => {
