@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import "./App.css";
-import { RandomAvatar } from "./AvatarGenerator";
 import { avatarOptions, username } from "./manageUserInStorage";
 import {
   IClientUser,
@@ -10,18 +9,22 @@ import {
   IIncomingPongMessage
 } from "./DataInterfaces";
 import UserChat from "./UserChat";
+import Header from "./Header";
+import AvailableUsersSection from "./AvailableUsersSection";
 
 const socket = new WebSocket(
-  `wss://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
+  // `wss://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
+  `ws://192.168.1.4:9090?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
 );
 
 const Main: React.FC = () => {
   const [activeClients, setActiveClients] = useState<IClientUser[]>([]); // This should be in Redux store, will be easier to manage
   const [socketError, setSocketError] = useState<boolean>(false);
-  const [activeChat, setActiveChat] = useState<boolean>(false); // This should be in Redux store for the reason below
+  const [activeChat, setActiveChat] = useState<boolean>(true); // This should be in Redux store for the reason below
   const [unreadUsers, setUnreadUsers] = useState<string[]>([]); // This should be in Redux store. Turned off everytime we click that user. Turned on everytime we get a message from that user and we're NOT actively talking to them
   const [messages, updateMessages] = useState<IIncomingMessageData[]>([]);
   const [activeRecipient, setActiveRecipient] = useState<IClientUser | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     let pingPongInterval: NodeJS.Timer;
     socket.addEventListener("open", function(event) {
@@ -76,7 +79,7 @@ const Main: React.FC = () => {
           }
 
           // If we are talking to someone but it's not who this new message came from, add the new messages author to the list of unreads
-          if (activeRecipient && activeRecipient.username !== messageData.author) {
+          if (activeRecipient && activeRecipient.username !== messageData.author && messageData.author !== username) {
             setUnreadUsers(unreadUsers => [...unreadUsers, messageData.author]);
           }
           // Update with the new message that came in from the user
@@ -91,21 +94,6 @@ const Main: React.FC = () => {
     };
   }, [activeRecipient, unreadUsers]);
 
-  const Header = () => (
-    <header className="header">
-      <div className="">
-        <p className="mb-0">
-          Welcome! Your username is <b data-testid="random-username">{username}</b> and this is your avatar!
-        </p>
-        <p className="mb-0" style={{ fontSize: ".90rem", color: "#21242b" }}>
-          Click on any of the active clients below to chat with them
-        </p>
-      </div>
-      <RandomAvatar {...avatarOptions} />
-      {socketError && <h5 className="text-danger">Socket disconnected, refresh to reconnect</h5>}
-    </header>
-  );
-
   const onUserAvatarIconEnter = (client: IClientUser) => {
     setActiveChat(true);
     setActiveRecipient({
@@ -116,46 +104,20 @@ const Main: React.FC = () => {
     const updatedUnreadUsersArray = [...unreadUsers];
     updatedUnreadUsersArray.splice(unreadUsers.indexOf(client.username));
     setUnreadUsers(updatedUnreadUsersArray);
+    inputRef.current && inputRef.current.focus();
   };
-
-  const UserAvatarIcon = (client: IClientUser, index: number) => (
-    <div
-      key={client.username}
-      data-testid={`user-avatar-${client.username}`}
-      tabIndex={index + 1}
-      onKeyPress={e => {
-        if (e.keyCode == 13 || e.which === 13) onUserAvatarIconEnter(client);
-      }}
-      onClick={() => {
-        onUserAvatarIconEnter(client);
-      }}
-      // Gray out the person we're currently talking to
-      className={`${
-        activeRecipient && client.username === activeRecipient.username ? "user-active" : ""
-      } availableChatUser  ${
-        // Don't show "new" message from a person if we're already talking to that person
-        unreadUsers.includes(client.username) && client.username !== username ? "unread-user" : ""
-      }`}
-    >
-      <RandomAvatar {...client.avatar} />
-      <p>{client.username}</p>
-    </div>
-  );
-
-  const AvailableUsersSection = () => (
-    <section className="available-users-section">
-      <h4 className="mb-3">Available Connected Clients:</h4>
-      <div className="mt-3 avatar-grid ">
-        {activeClients.filter(client => client.username !== username).map(UserAvatarIcon)}
-      </div>
-    </section>
-  );
 
   return (
     <div className="Main">
-      <Header />
+      <Header username={username} avatarOptions={avatarOptions} error={socketError} />
       <main className="body-content">
-        <AvailableUsersSection />
+        <AvailableUsersSection
+          activeClients={activeClients}
+          activeRecipient={activeRecipient}
+          unreadUsers={unreadUsers}
+          myUsername={username}
+          onUserIconClick={useCallback(onUserAvatarIconEnter, [])}
+        />
         {activeChat && activeRecipient && (
           <UserChat
             socket={socket}
@@ -165,6 +127,7 @@ const Main: React.FC = () => {
             updateMessages={updateMessages}
             author={username}
             recipient={activeRecipient}
+            inputRef={inputRef}
           />
         )}
       </main>
