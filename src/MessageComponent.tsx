@@ -25,7 +25,7 @@ const IndividualMessage: React.FC<IndividualMessageProps> = ({ messageData, auth
     >
       <div className="d-flex align-items-center justify-content-start">
         <RandomAvatarSmall {...messageData.avatarOptions} />
-        <b className="ml-1" style={{ color: isMyMessage ? "white" : "#09d3ac" }}>
+        <b className="ml-1" style={{ color: isMyMessage ? "white" : "#0ae589" }}>
           [{messageData.author}]{" "}
         </b>{" "}
         <p className="mb-0 mx-3">{messageData.msg}</p>
