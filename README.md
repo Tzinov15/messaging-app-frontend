@@ -28,6 +28,22 @@
 
   When exactly does React clean up an effect? React performs the cleanup when the component unmounts. However, as we learned earlier, effects run for every render and not just once. This is why React also cleans up effects from the previous render before running the effects next time. We’ll discuss why this helps avoid bugs and how to opt out of this behavior in case it creates performance issues later below.
 
+- `height` vs. `max-height`
+  https://css-tricks.com/almanac/properties/m/max-height/
+  The percentage is calculated with respect to the height of the containing block. If the height of the containing block is not specified explicitly, the percentage value is treated as none.
+
+- https://stackoverflow.com/questions/50819260/react-input-onchange-lag
+- https://stackoverflow.com/questions/42573017/in-react-es6-why-does-the-input-field-lose-focus-after-typing-a-character
+- https://stackoverflow.com/questions/54620698/whats-the-difference-between-useref-and-createref
+- `UseMemo`
+  https://blog.bitsrc.io/optimize-your-react-functional-components-with-usecallback-and-usememo-34bb52bc9a13
+  https://dev.to/spukas/react-usememo-for-optimisation-5gna
+  `useMemo` vs `React.memo`
+
+  - https://www.freecodecamp.org/news/how-to-identify-and-resolve-wasted-renders-in-react-cc4b1e910d10/
+
+- https://itnext.io/6-tips-for-better-react-performance-4329d12c126b
+
 - Learned that React Router `state` object that you push when you hit routes must be serializable
   https://stackoverflow.com/questions/24425885/failed-to-execute-pushstate-on-history-error-when-using-window-history-pushs
 - https://medium.com/the-andela-way/understanding-the-fundamentals-of-routing-in-react-b29f806b157e
