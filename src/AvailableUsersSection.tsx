@@ -19,8 +19,8 @@ const AvailableUsersSection: React.FC<AvailableUsersSectionProps> = ({
   onUserIconClick
 }) => (
   <section className="available-users-section">
-    <p className="mb-3">Available Connected Clients:</p>
-    <div className="mt-3 avatar-grid ">
+    <p>Available Connected Clients:</p>
+    <div className="mt-1 avatar-grid ">
       {activeClients
         .filter(client => client.username !== myUsername)
         .map((client, index) => {

@@ -53,6 +53,8 @@
 
 - https://medium.com/front-end-weekly/3-things-you-didnt-know-about-the-foreach-loop-in-js-ff02cec465b1
 
+Media Queries (CSS)
+
 ## Resources Used
 
 https://medium.com/@rossbulat/react-hooks-managing-web-sockets-with-useeffect-and-usestate-2dfc30eeceec
