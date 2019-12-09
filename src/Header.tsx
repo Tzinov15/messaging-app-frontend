@@ -9,7 +9,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ username, avatarOptions, error }) => {
-  console.log("HEADER is rendering...");
   return (
     <header className="header">
       <div className="logo-title">
@@ -17,7 +16,7 @@ const Header: React.FC<HeaderProps> = ({ username, avatarOptions, error }) => {
         <i style={{ fontSize: "2.5rem" }} className="fad fa-comment-dots"></i>
       </div>
       <div className="d-flex flex-row align-items-center">
-        <p className="mb-0">
+        <p className="mb-0 mr-2">
           Welcome,{" "}
           <b data-testid="random-username" style={{ color: "#0ae589" }}>
             {username}!{" "}
