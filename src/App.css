@@ -27,6 +27,19 @@ h5 {
   grid-area: available-users-section;
   padding: 0.5rem;
   background: #21242b;
+  scrollbar-width: none;
+}
+
+.avatar-grid {
+  scrollbar-width: none;
+}
+
+.available-users-section::-webkit-scrollbar {
+  display: none !important;
+}
+
+.avatar-grid::-webkit-scrollbar {
+  display: none !important;
 }
 
 header {
@@ -250,12 +263,21 @@ header {
   max-height: calc(100vh - 100px); /* this should be 100% of the parent component, which is .chat-section */
   grid-template-rows: 50px auto 50px;
 }
+
+.chat-section::-webkit-scrollbar {
+  display: none !important;
+}
+.message-board::-webkit-scrollbar {
+  display: none !important;
+}
+
 .message-board {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   overflow-y: scroll;
   height: 100%;
+  scrollbar-width: none;
 }
 
 .logo-title-text {
