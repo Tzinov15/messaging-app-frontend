@@ -43,7 +43,7 @@ header {
 /* if the screen is less than 700px  */
 @media only screen and (max-width: 870px) {
   .body-content {
-    grid-template-rows: 200px auto;
+    grid-template-rows: 100px auto;
     grid-template-areas:
       "available-users-section"
       "chat-section";
@@ -55,10 +55,41 @@ header {
   }
   .available-users-section {
     overflow-x: scroll;
+    overflow-y: hidden;
   }
   .availableChatUser:focus {
     background: none;
     outline: none !important;
+  }
+  .logo-title-text {
+    font-size: large;
+  }
+
+  .logo-title-icon {
+    font-size: x-large;
+  }
+
+  .logo-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-self: flex-start;
+    color: #0ae589;
+  }
+
+  .welcome-text {
+    font-size: x-small;
+  }
+
+  .avatar-text {
+    font-size: small;
+  }
+
+  .available-users-section p {
+    font-size: small;
+  }
+  .Main {
+    grid-template-rows: 50px auto;
   }
 }
 
@@ -80,6 +111,20 @@ header {
   .body-content {
     grid-template-columns: 2fr 4fr;
     grid-template-areas: "available-users-section chat-section";
+  }
+
+  .logo-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-self: flex-start;
+    color: #0ae589;
+  }
+  .logo-title-icon {
+    font-size: xx-large;
+  }
+  .available-users-section p {
+    font-size: large;
   }
 }
 
@@ -109,6 +154,19 @@ header {
     overflow-y: scroll;
     height: 100%;
   }
+  .logo-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-self: flex-start;
+    color: #0ae589;
+  }
+  .logo-title-icon {
+    font-size: xx-large;
+  }
+  .available-users-section p {
+    font-size: large;
+  }
 }
 
 .App-logo {
@@ -133,6 +191,7 @@ header {
 .availableChatUser {
   position: relative;
   transition: 0.3s;
+  margin-right: 1rem;
   opacity: 0.5;
 }
 
@@ -197,14 +256,6 @@ header {
   align-items: flex-start;
   overflow-y: scroll;
   height: 100%;
-}
-
-.logo-title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-self: flex-start;
-  color: #0ae589;
 }
 
 .logo-title-text {

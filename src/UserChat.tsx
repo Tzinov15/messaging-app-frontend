@@ -26,7 +26,7 @@ const UserChat: React.FC<{
   return (
     <section className="chat-section" data-testid="user-chat-section">
       <section className="d-flex flex-row align-items-center justify-content-center">
-        <p>Talking to {recipient.username}</p>
+        <p className="mb-0">Talking to {recipient.username}</p>
         <RandomAvatarMedium {...recipient.avatar} />
       </section>
       <div data-testid="message-board" className="message-board">

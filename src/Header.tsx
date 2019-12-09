@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
-import { RandomAvatarMedium, AvatarProps } from "./AvatarGenerator";
+import { RandomAvatarMedium, RandomAvatarSmall, AvatarProps } from "./AvatarGenerator";
+import { useMediaQuery } from "react-responsive";
 
 interface HeaderProps {
   username: string;
@@ -9,14 +10,15 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ username, avatarOptions, error }) => {
+  const isMobile = useMediaQuery({ query: "(max-width: 870px)" });
   return (
     <header className="header">
       <div className="logo-title">
         <h1 className="mb-0 mr-1 logo-title-text">Messengy</h1>
-        <i style={{ fontSize: "2.5rem" }} className="fad fa-comment-dots"></i>
+        <i className="fad fa-comment-dots logo-title-icon"></i>
       </div>
       <div className="d-flex flex-row align-items-center">
-        <p className="mb-0 mr-2">
+        <p className="mb-0 mr-2 welcome-text">
           Welcome,{" "}
           <b data-testid="random-username" style={{ color: "#0ae589" }}>
             {username}!{" "}
@@ -24,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ username, avatarOptions, error }) => {
           This is your avatar! <br />
           Click on active clients below to chat.
         </p>
-        <RandomAvatarMedium {...avatarOptions} />
+        {isMobile ? <RandomAvatarSmall {...avatarOptions} /> : <RandomAvatarMedium {...avatarOptions} />}
       </div>
       {error && <h5 className="text-danger">Socket disconnected, refresh to reconnect</h5>}
     </header>
