@@ -33,7 +33,7 @@ const AvailableUsersSection: React.FC<AvailableUsersSectionProps> = ({
             client,
             onClick: onUserIconClick
           };
-          return <UserAvatarIcon {...userAvatarIconProps} />;
+          return <UserAvatarIcon key={client.username} {...userAvatarIconProps} />;
         })}
     </div>
   </section>

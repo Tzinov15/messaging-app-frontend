@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import "./App.css";
 import { IIncomingMessageData, IClientUser } from "./DataInterfaces";
 import { RandomAvatarMedium } from "./AvatarGenerator";
 import { ChatForm } from "./ChatForm";
+
 import IndividualMessage from "./MessageComponent";
 
 const UserChat: React.FC<{
@@ -14,12 +15,13 @@ const UserChat: React.FC<{
   inputRef: React.RefObject<HTMLInputElement>;
 }> = ({ socket, author, recipient, messages, inputRef }) => {
   const messagesEndRef = React.createRef<HTMLDivElement>();
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current && messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [messagesEndRef]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current &&
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" }) &&
-      (messagesEndRef.current.scrollTop -= 60);
-  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   return (
     <section className="chat-section" data-testid="user-chat-section">
@@ -29,17 +31,11 @@ const UserChat: React.FC<{
       </section>
       <div data-testid="message-board" className="message-board">
         {messages.map(messageData => (
-          <IndividualMessage messageData={messageData} author={author} />
+          <IndividualMessage key={messageData.msg + messageData.timestamp} messageData={messageData} author={author} />
         ))}
-        <div style={{ marginTop: "20px" }} ref={messagesEndRef} />
+        <div style={{ height: "10px" }} ref={messagesEndRef}></div>
       </div>
-      <ChatForm
-        inputRef={inputRef}
-        recipient={recipient}
-        author={author}
-        socket={socket}
-        scrollToBottom={scrollToBottom}
-      />
+      <ChatForm inputRef={inputRef} recipient={recipient} author={author} socket={socket} />
     </section>
   );
 };
