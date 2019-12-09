@@ -44,16 +44,15 @@ const Main: React.FC = () => {
     };
   }, []);
 
+  const handleVisibilityChange = () => {
+    if (!document.hidden) document.title = "Messengy";
+  };
+
   useEffect(() => {
-    document.addEventListener(
-      "visibilitychange",
-      () => {
-        if (!document.hidden) {
-          document.title = "Messengly";
-        }
-      },
-      false
-    );
+    document.addEventListener("visibilitychange", handleVisibilityChange, false);
+    return function cleanup() {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   useEffect(() => {
