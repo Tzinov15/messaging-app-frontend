@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { IIncomingMessageData, IClientUser } from "./DataInterfaces";
 import { RandomAvatarMedium } from "./AvatarGenerator";
@@ -16,10 +16,12 @@ const UserChat: React.FC<{
   const messagesEndRef = React.createRef<HTMLDivElement>();
 
   const scrollToBottom = () => {
-    messagesEndRef.current &&
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" }) &&
-      (messagesEndRef.current.scrollTop -= 60);
+    messagesEndRef.current && messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <section className="chat-section" data-testid="user-chat-section">
@@ -31,15 +33,9 @@ const UserChat: React.FC<{
         {messages.map(messageData => (
           <IndividualMessage messageData={messageData} author={author} />
         ))}
-        <div style={{ marginTop: "20px" }} ref={messagesEndRef} />
+        <div style={{ height: "10px" }} ref={messagesEndRef}></div>
       </div>
-      <ChatForm
-        inputRef={inputRef}
-        recipient={recipient}
-        author={author}
-        socket={socket}
-        scrollToBottom={scrollToBottom}
-      />
+      <ChatForm inputRef={inputRef} recipient={recipient} author={author} socket={socket} />
     </section>
   );
 };
