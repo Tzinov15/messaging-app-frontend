@@ -45,6 +45,18 @@ const Main: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (!document.hidden) {
+          document.title = "Messengly";
+        }
+      },
+      false
+    );
+  }, []);
+
+  useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       const messageData:
         | IIncomingMessageData
@@ -71,6 +83,9 @@ const Main: React.FC = () => {
           break;
         case "USER_MESSAGE":
           // If we're not currently talking to anyone, add the incoming author to the list of unreads
+          if (document.hidden) {
+            document.title = `New message from ${messageData.author}... 🎉`;
+          }
           if (!activeRecipient) {
             setUnreadUsers(unreadUsers => [...unreadUsers, messageData.author]);
           }
