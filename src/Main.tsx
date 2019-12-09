@@ -27,8 +27,6 @@ const Main: React.FC = () => {
   useEffect(() => {
     let pingPongInterval: NodeJS.Timer;
     socket.addEventListener("open", function(event) {
-      console.log("Hello Server!");
-
       pingPongInterval = setInterval(() => {
         socket.send(JSON.stringify({ action: "PING" }));
       }, 10000);
