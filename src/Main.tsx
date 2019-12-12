@@ -6,7 +6,9 @@ import {
   IIncomingConnectedClientData,
   IIncomingMessageData,
   IIncomingNewClientData,
-  IIncomingPongMessage
+  IIncomingPongMessage,
+  IIncomingActivelyTypingData,
+  IIncomingNotActivelyTypingData
 } from "./DataInterfaces";
 import UserChat from "./UserChat";
 import Header from "./Header";
@@ -22,6 +24,7 @@ const Main: React.FC = () => {
   const [activeChat, setActiveChat] = useState<boolean>(true); // This should be in Redux store for the reason below
   const [unreadUsers, setUnreadUsers] = useState<string[]>([]); // This should be in Redux store. Turned off everytime we click that user. Turned on everytime we get a message from that user and we're NOT actively talking to them
   const [messages, updateMessages] = useState<IIncomingMessageData[]>([]);
+  const [currentlyTypedMessageFromRecipient, updateCurrentlyTypedMessageFromRecipient] = useState<string | null>(null);
   const [activeRecipient, setActiveRecipient] = useState<IClientUser | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -61,9 +64,17 @@ const Main: React.FC = () => {
         | IIncomingMessageData
         | IIncomingConnectedClientData
         | IIncomingNewClientData
+        | IIncomingActivelyTypingData
+        | IIncomingNotActivelyTypingData
         | IIncomingPongMessage = JSON.parse(event.data);
       switch (messageData.action) {
         // case I_CONNECTED // Need new case for when this particular socket has been first acknowledged by the server because in that case the server will bee sending message data
+        case "ACTIVELY_TYPING":
+          updateCurrentlyTypedMessageFromRecipient(messageData.currentMessage);
+          break;
+        case "NOT_ACTIVELY_TYPING":
+          updateCurrentlyTypedMessageFromRecipient(null);
+          break;
         case "PONG":
           break;
         case "CLIENT_CONNECT": // New User -> this means that the server is updating us to tell us that there is a new kid in the neighborhood and is giving us their username and avatar info so we can render a new entry for them
@@ -132,6 +143,7 @@ const Main: React.FC = () => {
         {activeChat && activeRecipient && (
           <UserChat
             socket={socket}
+            currentlyTypedMessageFromRecipient={currentlyTypedMessageFromRecipient}
             messages={messages.filter(
               message => message.author === activeRecipient.username || message.recipient === activeRecipient.username
             )}

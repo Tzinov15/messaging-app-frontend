@@ -10,10 +10,11 @@ const UserChat: React.FC<{
   socket: WebSocket;
   author: string;
   messages: IIncomingMessageData[];
+  currentlyTypedMessageFromRecipient: string | null;
   updateMessages: React.Dispatch<React.SetStateAction<IIncomingMessageData[]>>;
   recipient: IClientUser;
   inputRef: React.RefObject<HTMLInputElement>;
-}> = ({ socket, author, recipient, messages, inputRef }) => {
+}> = ({ socket, author, recipient, messages, inputRef, currentlyTypedMessageFromRecipient }) => {
   const messagesEndRef = React.createRef<HTMLDivElement>();
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current && messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -33,6 +34,11 @@ const UserChat: React.FC<{
         {messages.map(messageData => (
           <IndividualMessage key={messageData.msg + messageData.timestamp} messageData={messageData} author={author} />
         ))}
+        <i
+          className={`fal fa-typewriter actively-typing-indicator-${
+            currentlyTypedMessageFromRecipient ? "present" : "hidden"
+          }`}
+        ></i>
         <div style={{ height: "10px" }} ref={messagesEndRef}></div>
       </div>
       <ChatForm inputRef={inputRef} recipient={recipient} author={author} socket={socket} />

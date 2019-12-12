@@ -283,3 +283,18 @@ header {
 .logo-title-text {
   font-family: "Major Mono Display";
 }
+
+.actively-typing-indicator-hidden {
+  color: #0ae589;
+  font-size: 2rem;
+  opacity: 0;
+  align-self: flex-end;
+  transition: opacity 0.03s;
+}
+.actively-typing-indicator-present {
+  color: #0ae589;
+  font-size: 2rem;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+  align-self: flex-end;
+}
