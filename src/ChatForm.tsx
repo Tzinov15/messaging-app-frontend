@@ -24,7 +24,26 @@ export const ChatForm = ({
         autoFocus
         value={inputValue}
         placeholder={`Write message to ${recipient.username}...`}
-        onChange={e => changeInputValue(e.target.value)}
+        onChange={e => {
+          changeInputValue(e.target.value);
+          if (e.target.value === "") {
+            socket.send(
+              JSON.stringify({
+                action: "NOT_ACTIVELY_TYPING",
+                recipient: recipient.username
+              })
+            );
+          }
+          if (e.target.value !== "") {
+            socket.send(
+              JSON.stringify({
+                action: "ACTIVELY_TYPING",
+                recipient: recipient.username,
+                currentMessage: e.target.value
+              })
+            );
+          }
+        }}
       ></input>
       <button
         data-testid="chat-button-submit"
@@ -38,6 +57,12 @@ export const ChatForm = ({
           };
           changeInputValue("");
           socket.send(JSON.stringify(outgoingMessage));
+          socket.send(
+            JSON.stringify({
+              action: "NOT_ACTIVELY_TYPING",
+              recipient: recipient.username
+            })
+          );
         }}
       >
         Submit Message

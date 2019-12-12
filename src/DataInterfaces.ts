@@ -25,13 +25,15 @@ export interface IIncomingMessageData {
 
 // Shape of the data that comes in to a client from the Server
 // See IOutgoingMessageData on the Server
-export interface IIncomingMessageData {
-  author: string;
+export interface IIncomingActivelyTypingData {
   recipient: string;
-  msg: string;
-  timestamp: string;
-  action: "USER_MESSAGE";
-  avatarOptions: AvatarProps;
+  currentMessage: string;
+  action: "ACTIVELY_TYPING";
+}
+
+export interface IIncomingNotActivelyTypingData {
+  recipient: string;
+  action: "NOT_ACTIVELY_TYPING";
 }
 
 export interface IIncomingNewClientData {
