@@ -289,7 +289,6 @@ header {
   font-size: 2rem;
   opacity: 0;
   align-self: flex-end;
-  transition: opacity 0.03s;
 }
 .actively-typing-indicator-present {
   color: #0ae589;
