@@ -34,7 +34,7 @@ export const ChatForm = ({
               })
             );
           }
-          if (e.target.value !== "") {
+          if (e.target.value !== "" && recipient.username !== "SERVER") {
             socket.send(
               JSON.stringify({
                 action: "ACTIVELY_TYPING",
@@ -57,12 +57,14 @@ export const ChatForm = ({
           };
           changeInputValue("");
           socket.send(JSON.stringify(outgoingMessage));
-          socket.send(
-            JSON.stringify({
-              action: "NOT_ACTIVELY_TYPING",
-              recipient: recipient.username
-            })
-          );
+          if (recipient.username !== "SERVER") {
+            socket.send(
+              JSON.stringify({
+                action: "NOT_ACTIVELY_TYPING",
+                recipient: recipient.username
+              })
+            );
+          }
         }}
       >
         Submit Message
