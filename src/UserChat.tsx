@@ -34,11 +34,15 @@ const UserChat: React.FC<{
         {messages.map(messageData => (
           <IndividualMessage key={messageData.msg + messageData.timestamp} messageData={messageData} author={author} />
         ))}
-        <i
-          className={`fal fa-typewriter actively-typing-indicator-${
+        <div
+          style={{ fontSize: ".75rem" }}
+          className={`mt-2 actively-typing-indicator-${
             currentlyTypedMessageFromRecipient ? "present" : "hidden"
-          }`}
-        ></i>
+          } d-flex flex-row align-items-center`}
+        >
+          <i className={`fal fa-typewriter mr-1`}></i>
+          <i className="">{recipient.username} is actively typing</i>
+        </div>
         <div style={{ height: "10px" }} ref={messagesEndRef}></div>
       </div>
       <ChatForm inputRef={inputRef} recipient={recipient} author={author} socket={socket} />

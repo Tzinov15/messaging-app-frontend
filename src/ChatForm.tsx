@@ -26,7 +26,7 @@ export const ChatForm = ({
         placeholder={`Write message to ${recipient.username}...`}
         onChange={e => {
           changeInputValue(e.target.value);
-          if (e.target.value === "") {
+          if (e.target.value === "" && recipient.username !== "SERVER") {
             socket.send(
               JSON.stringify({
                 action: "NOT_ACTIVELY_TYPING",
