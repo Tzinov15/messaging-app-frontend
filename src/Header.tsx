@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import { RandomAvatarMedium, RandomAvatarSmall, AvatarProps } from "./AvatarGenerator";
 import { useMediaQuery } from "react-responsive";
+import { useAuth0 } from "./react-auth0-spa";
 
 interface HeaderProps {
   username: string;
@@ -10,6 +11,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ username, avatarOptions, error }) => {
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const isMobile = useMediaQuery({ query: "(max-width: 870px)" });
   return (
     <header className="header">
@@ -29,6 +31,7 @@ const Header: React.FC<HeaderProps> = ({ username, avatarOptions, error }) => {
         {isMobile ? <RandomAvatarSmall {...avatarOptions} /> : <RandomAvatarMedium {...avatarOptions} />}
       </div>
       {error && <h5 className="text-danger">Socket disconnected, refresh to reconnect</h5>}
+      <span onClick={() => logout()}>Logout</span>
     </header>
   );
 };

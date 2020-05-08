@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import "./App.css";
-import { avatarOptions, username } from "./manageUserInStorage";
+import { avatarOptions } from "./manageUserInStorage";
 import {
   IClientUser,
   IIncomingConnectedClientData,
@@ -8,18 +8,17 @@ import {
   IIncomingNewClientData,
   IIncomingPongMessage,
   IIncomingActivelyTypingData,
-  IIncomingNotActivelyTypingData
+  IIncomingNotActivelyTypingData,
 } from "./DataInterfaces";
 import UserChat from "./UserChat";
 import Header from "./Header";
 import AvailableUsersSection from "./AvailableUsersSection";
+import { useAuth0 } from "./react-auth0-spa";
 
-const socket = new WebSocket(
-  `wss://secure-shelf-01153.herokuapp.com?username=${username}&avatarOptions=${JSON.stringify(avatarOptions)}`
-);
-
+let socket: WebSocket;
 const Main: React.FC = () => {
   const [activeClients, setActiveClients] = useState<IClientUser[]>([]); // This should be in Redux store, will be easier to manage
+  const { user, isAuthenticated, isLoading } = useAuth0();
   const [socketError, setSocketError] = useState<boolean>(false);
   const [activeChat, setActiveChat] = useState<boolean>(true); // This should be in Redux store for the reason below
   const [unreadUsers, setUnreadUsers] = useState<string[]>([]); // This should be in Redux store. Turned off everytime we click that user. Turned on everytime we get a message from that user and we're NOT actively talking to them
@@ -28,22 +27,34 @@ const Main: React.FC = () => {
   const [activeRecipient, setActiveRecipient] = useState<IClientUser | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
+    if (user === undefined) {
+      return;
+    }
     let pingPongInterval: NodeJS.Timer;
-    socket.addEventListener("open", function(event) {
+    socket = new WebSocket(
+      `wss://secure-shelf-01153.herokuapp.com?username=${user.email}&avatarOptions=${JSON.stringify(avatarOptions)}`
+    );
+
+    socket.addEventListener("open", function (event) {
       pingPongInterval = setInterval(() => {
         socket.send(JSON.stringify({ action: "PING" }));
       }, 10000);
     });
 
-    socket.addEventListener("close", function(event) {
+    socket.addEventListener("close", function (event) {
       setSocketError(true);
     });
-    socket.addEventListener("error", function(event) {
+    socket.addEventListener("error", function (event) {
       setSocketError(true);
     });
     return function cleanup() {
-      socket.close();
       clearInterval(pingPongInterval);
+    };
+  }, [user]);
+
+  useEffect(() => {
+    return function cleanup() {
+      socket.close();
     };
   }, []);
 
@@ -59,6 +70,9 @@ const Main: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (user === undefined) {
+      return;
+    }
     const onMessage = (event: MessageEvent) => {
       const messageData:
         | IIncomingMessageData
@@ -89,7 +103,7 @@ const Main: React.FC = () => {
           break;
         case "CLIENT_NEW":
           setActiveClients(messageData.users);
-          updateMessages(messages => [...messages, ...messageData.messages]);
+          updateMessages((messages) => [...messages, ...messageData.messages]);
           break;
         case "USER_MESSAGE":
           // If we're not currently talking to anyone, add the incoming author to the list of unreads
@@ -97,15 +111,19 @@ const Main: React.FC = () => {
             document.title = `New message from ${messageData.author}... 🎉`;
           }
           if (!activeRecipient) {
-            setUnreadUsers(unreadUsers => [...unreadUsers, messageData.author]);
+            setUnreadUsers((unreadUsers) => [...unreadUsers, messageData.author]);
           }
 
           // If we are talking to someone but it's not who this new message came from, add the new messages author to the list of unreads
-          if (activeRecipient && activeRecipient.username !== messageData.author && messageData.author !== username) {
-            setUnreadUsers(unreadUsers => [...unreadUsers, messageData.author]);
+          if (
+            activeRecipient &&
+            activeRecipient.username !== messageData.author &&
+            messageData.author !== user?.email
+          ) {
+            setUnreadUsers((unreadUsers) => [...unreadUsers, messageData.author]);
           }
           // Update with the new message that came in from the user
-          updateMessages(messages => [...messages, messageData]);
+          updateMessages((messages) => [...messages, messageData]);
           break;
       }
     };
@@ -114,13 +132,13 @@ const Main: React.FC = () => {
     return function cleanup() {
       socket.removeEventListener("message", onMessage);
     };
-  }, [activeRecipient, unreadUsers]);
+  }, [activeRecipient, unreadUsers, user]);
 
   const onUserAvatarIconEnter = (client: IClientUser) => {
     setActiveChat(true);
     setActiveRecipient({
       username: client.username,
-      avatar: client.avatar
+      avatar: client.avatar,
     });
     // TODO: All this logic of updating the unreadusers array needs to be cleaned up, updated
     const updatedUnreadUsersArray = [...unreadUsers];
@@ -131,13 +149,13 @@ const Main: React.FC = () => {
 
   return (
     <div className="Main">
-      <Header username={username} avatarOptions={avatarOptions} error={socketError} />
+      <Header username={user?.email} avatarOptions={avatarOptions} error={socketError} />
       <main className="body-content">
         <AvailableUsersSection
           activeClients={activeClients}
           activeRecipient={activeRecipient}
           unreadUsers={unreadUsers}
-          myUsername={username}
+          myUsername={user?.email}
           onUserIconClick={useCallback(onUserAvatarIconEnter, [])}
         />
         {activeChat && activeRecipient && (
@@ -145,10 +163,10 @@ const Main: React.FC = () => {
             socket={socket}
             currentlyTypedMessageFromRecipient={currentlyTypedMessageFromRecipient}
             messages={messages.filter(
-              message => message.author === activeRecipient.username || message.recipient === activeRecipient.username
+              (message) => message.author === activeRecipient.username || message.recipient === activeRecipient.username
             )}
             updateMessages={updateMessages}
-            author={username}
+            author={user?.email}
             recipient={activeRecipient}
             inputRef={inputRef}
           />

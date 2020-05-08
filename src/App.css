@@ -4,6 +4,67 @@ html {
 h5 {
   margin: 0;
 }
+
+.loginPage {
+  text-align: center;
+  min-height: 100vh;
+  background-color: #282c34;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: 100;
+}
+
+.logo-title-login {
+  display: flex;
+  flex-direction: column;
+  margin: 20% auto;
+  align-items: center;
+
+  font-size: 5rem;
+  font-weight: 100;
+  font-family: "Major Mono Display";
+  justify-self: flex-start;
+  color: #0ae589;
+}
+
+.logo-title-login span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: flex-start;
+  color: #0ae589;
+  font-family: "Major Mono Display";
+}
+
+.logo-title-icon-login {
+  font-size: 5rem;
+}
+
+.login-button {
+  border-radius: 10px;
+  color: #0ae589;
+  background-color: transparent;
+  margin-top: 2rem;
+  border: 2px solid #0ae589;
+  font-family: "Helvetica Neue";
+  font-size: 2rem;
+  transition: all 0.3s;
+  font-weight: 300 !important;
+}
+
+.login-button:hover {
+  border-radius: 10px;
+  transition: all 0.3s;
+  background-color: #0ae58a61;
+  margin-top: 2rem;
+  border: 2px solid #0ae589;
+  font-family: "Helvetica Neue";
+  font-size: 2rem;
+  font-weight: 300 !important;
+}
+
 .Main {
   text-align: center;
   min-height: 100vh;
@@ -76,6 +137,9 @@ header {
   }
   .logo-title-text {
     font-size: large;
+  }
+
+  .logo-title-text-login {
   }
 
   .logo-title-icon {
