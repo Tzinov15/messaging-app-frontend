@@ -36,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({ username, avatarOptions, error }) => {
         data-testid="chat-button-submit"
         className="ml-2 logout-button"
         onClick={(e) => {
-          logout({});
+          logout({ returnTo: window.location.origin });
         }}
       >
         Logout
