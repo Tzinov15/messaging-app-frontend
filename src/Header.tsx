@@ -31,7 +31,16 @@ const Header: React.FC<HeaderProps> = ({ username, avatarOptions, error }) => {
         {isMobile ? <RandomAvatarSmall {...avatarOptions} /> : <RandomAvatarMedium {...avatarOptions} />}
       </div>
       {error && <h5 className="text-danger">Socket disconnected, refresh to reconnect</h5>}
-      <span onClick={() => logout()}>Logout</span>
+
+      <button
+        data-testid="chat-button-submit"
+        className="ml-2 logout-button"
+        onClick={(e) => {
+          logout({});
+        }}
+      >
+        Logout
+      </button>
     </header>
   );
 };

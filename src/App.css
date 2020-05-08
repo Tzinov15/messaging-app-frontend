@@ -65,6 +65,29 @@ h5 {
   font-weight: 300 !important;
 }
 
+.logout-button {
+  border-radius: 10px;
+  color: #0ae589;
+  background-color: transparent;
+  border: 1px solid #0ae589;
+  font-family: "Helvetica Neue";
+  font-size: 1rem;
+  transition: all 0.3s;
+  font-weight: 300 !important;
+  position: absolute;
+  right: 1rem;
+}
+
+.logout-button:hover {
+  border-radius: 10px;
+  transition: all 0.3s;
+  background-color: #0ae58a61;
+  border: 1px solid #0ae589;
+  font-family: "Helvetica Neue";
+  font-size: 1rem;
+  font-weight: 300 !important;
+}
+
 .Main {
   text-align: center;
   min-height: 100vh;

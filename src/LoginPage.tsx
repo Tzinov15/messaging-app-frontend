@@ -1,6 +1,8 @@
 import React from "react";
 import { useAuth0 } from "./react-auth0-spa";
 
+import history from "./utils/history";
+
 import { Link } from "react-router-dom";
 
 const LoginPage = () => {
@@ -14,24 +16,28 @@ const LoginPage = () => {
           <h1 className="mb-0 mr-1 logo-title-text-login">Messengy</h1>
           <i className="fad fa-comment-dots logo-title-icon-login"></i>
         </div>
-        <button
-          data-testid="chat-button-submit"
-          className="ml-2 login-button"
-          onClick={(e) => {
-            loginWithRedirect({});
-          }}
-        >
-          Login
-        </button>
+        {!isAuthenticated ? (
+          <button
+            data-testid="chat-button-submit"
+            className="ml-2 login-button"
+            onClick={(e) => {
+              loginWithRedirect({});
+            }}
+          >
+            Login
+          </button>
+        ) : (
+          <button
+            data-testid="chat-button-submit"
+            className="ml-2 login-button"
+            onClick={(e) => {
+              history.push("/home");
+            }}
+          >
+            Go to app
+          </button>
+        )}
       </div>
-
-      {isAuthenticated && <button onClick={() => logout()}>Log out</button>}
-
-      {isAuthenticated && (
-        <span>
-          <Link to="/main">Home</Link>
-        </span>
-      )}
     </div>
   );
 };

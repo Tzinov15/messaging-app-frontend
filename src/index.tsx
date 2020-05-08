@@ -22,7 +22,7 @@ ReactDOM.render(
     initOptions={{
       domain: config.domain,
       client_id: config.clientId,
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/home`,
     }}
     onRedirectCallback={onRedirectCallback}
   >
