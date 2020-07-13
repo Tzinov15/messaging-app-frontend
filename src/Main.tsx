@@ -18,7 +18,7 @@ import { useAuth0 } from "./react-auth0-spa";
 let socket: WebSocket;
 const Main: React.FC = () => {
   const [activeClients, setActiveClients] = useState<IClientUser[]>([]); // This should be in Redux store, will be easier to manage
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user } = useAuth0();
   const [socketError, setSocketError] = useState<boolean>(false);
   const [activeChat, setActiveChat] = useState<boolean>(true); // This should be in Redux store for the reason below
   const [unreadUsers, setUnreadUsers] = useState<string[]>([]); // This should be in Redux store. Turned off everytime we click that user. Turned on everytime we get a message from that user and we're NOT actively talking to them

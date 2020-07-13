@@ -3,10 +3,8 @@ import { useAuth0 } from "./react-auth0-spa";
 
 import history from "./utils/history";
 
-import { Link } from "react-router-dom";
-
 const LoginPage = () => {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
 
   return (
     <div className="loginPage">

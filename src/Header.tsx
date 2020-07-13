@@ -11,7 +11,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ username, avatarOptions, error }) => {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { logout } = useAuth0();
   const isMobile = useMediaQuery({ query: "(max-width: 870px)" });
   return (
     <header className="header">
